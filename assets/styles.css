@@ -7,11 +7,11 @@
   --surface:   #161b22;
   --card:      #21262d;
   --border:    #30363d;
-  --gold:      #d4a843;
-  --gold-light:#e8c56a;
-  --gold-dim:  #a8832e;
-  --green:     #8B1F2E;
-  --green-dim: rgba(139,31,46,0.12);
+  --gold:      #2db87f;
+  --gold-light:#4dd9a0;
+  --gold-dim:  #1a8f5e;
+  --green:     #2db87f;
+  --green-dim: rgba(45,184,127,0.12);
   --text:      #e6edf3;
   --muted:     #8b949e;
   --red:       #f85149;
@@ -95,7 +95,7 @@ nav {
   background: var(--gold-light);
   color: #0d1117;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(212,168,67,0.3);
+  box-shadow: 0 8px 24px rgba(45,184,127,0.3);
 }
 .btn-outline {
   background: transparent;
