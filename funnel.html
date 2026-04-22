@@ -684,13 +684,7 @@
     return parseFloat(val.replace(/[^0-9.]/g, '')) || 0;
   }
 
-  // ── Formspree ──────────────────────────────────────────────────────────────
-  // 1. Go to https://formspree.io and create a free account
-  // 2. Click "New Form", name it "SellYourBusiness Leads"
-  // 3. Copy your form endpoint (looks like https://formspree.io/f/xyzabcde)
-  // 4. Paste it below, replacing the placeholder value
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvzdgypp';
-  // ───────────────────────────────────────────────────────────────────────────
+  const FORMSPREE_ENDPOINT = '/api/submit';
 
   async function submitForm() {
     if (!validateStep(4)) return;
@@ -720,7 +714,7 @@
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Generating…';
 
     // Submit to Formspree
-    if (!FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+    if (true) {
       try {
         const res = await fetch(FORMSPREE_ENDPOINT, {
           method: 'POST',
