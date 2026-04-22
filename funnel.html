@@ -719,31 +719,40 @@
     btn.disabled = true;
     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Generating…';
 
-    // Submit to Formspree (fire-and-forget — don't block the user)
+    // Submit to Formspree
     if (!FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
-      fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          'Business Name':    data.businessName,
-          'Industry':         data.industry,
-          'Website':          data.websiteUrl,
-          'Years in Business':data.yearsInBusiness,
-          'Gross Revenue':    '$' + data.grossRevenue.toLocaleString(),
-          'Net Income':       '$' + data.netIncome.toLocaleString(),
-          'Reason for Selling':data.reasonForSelling,
-          'Preferred Contact':data.contactMethod,
-          'Owner Name':       data.ownerName,
-          'email':            data.ownerEmail,  // Formspree uses "email" key for reply-to
-          'Phone':            data.ownerPhone,
-          'Submitted At':     data.submittedAt,
-          'cf-turnstile-response': document.querySelector('[name="cf-turnstile-response"]')?.value,
-        })
-      }).catch(() => {}); // Silently ignore network errors — lead is in localStorage
+      try {
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            'Business Name':    data.businessName,
+            'Industry':         data.industry,
+            'Website':          data.websiteUrl,
+            'Years in Business':data.yearsInBusiness,
+            'Gross Revenue':    '$' + data.grossRevenue.toLocaleString(),
+            'Net Income':       '$' + data.netIncome.toLocaleString(),
+            'Reason for Selling':data.reasonForSelling,
+            'Preferred Contact':data.contactMethod,
+            'Owner Name':       data.ownerName,
+            'email':            data.ownerEmail,
+            'Phone':            data.ownerPhone,
+            'Submitted At':     data.submittedAt,
+            'cf-turnstile-response': document.querySelector('[name="cf-turnstile-response"]')?.value,
+          })
+        });
+        const json = await res.json();
+        console.log('Formspree response:', res.status, json);
+        if (!res.ok) {
+          console.error('Formspree error:', json);
+        }
+      } catch (err) {
+        console.error('Formspree fetch failed:', err);
+      }
     }
 
-    // Short pause so the loading state is visible, then go to report
-    setTimeout(() => { window.location.href = 'report.html'; }, 800);
+    // Go to report
+    window.location.href = 'report.html';
   }
 
   // Format money inputs
