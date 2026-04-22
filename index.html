@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sell Your Business | John Matsis – Business & Investment Property Broker</title>
+  <meta name="description" content="Find out what your business is worth. Get a free, confidential business valuation from John Matsis, Business & Investment Property Broker and Principal with HedgStone Business Advisors." />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    /* HERO */
+    .hero {
+      padding: 160px 0 120px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,168,67,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 0 24px;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(212,168,67,0.1);
+      border: 1px solid rgba(212,168,67,0.25);
+      color: var(--gold);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      color: var(--text);
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      margin-bottom: 48px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.75;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-trust {
+      margin-top: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      text-align: center;
+    }
+    .trust-item .num {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .trust-item .label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .trust-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+    }
+
+    /* HOW IT WORKS */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 28px;
+      position: relative;
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(212,168,67,0.15);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .step-card h3 {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .step-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* BROKER BIO */
+    .bio-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .bio-inner {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+    .bio-image-wrap {
+      position: relative;
+    }
+    .bio-image-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--gold), transparent 60%);
+      z-index: 0;
+    }
+    .bio-image-wrap img {
+      width: 100%;
+      border-radius: 14px;
+      display: block;
+      position: relative;
+      z-index: 1;
+      object-fit: cover;
+      aspect-ratio: 3/4;
+    }
+    .bio-content .name {
+      font-size: 2.4rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .bio-content .title-tag {
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      color: var(--gold);
+      margin-bottom: 28px;
+      letter-spacing: 0.03em;
+    }
+    .bio-content p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+    .bio-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .bio-contact a {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .bio-contact a:hover { color: var(--gold); }
+    .bio-contact svg { flex-shrink: 0; }
+
+    /* HEDGSTONE */
+    .hedg-inner {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 72px;
+      align-items: center;
+    }
+    .hedg-content p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+    .hedg-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .hedg-stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .hedg-stat .value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .hedg-stat .desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .hedg-logo-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .hedg-logo-box img {
+      width: 100%;
+      max-width: 260px;
+    }
+    .hedg-logo-box p {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* CTA BANNER */
+    .cta-banner {
+      text-align: center;
+      padding: 100px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 100% at 50% 100%, rgba(212,168,67,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-banner h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 20px;
+    }
+    .cta-banner p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 40px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 900px) {
+      .bio-inner, .hedg-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .bio-image-wrap { max-width: 320px; margin: 0 auto; }
+    }
+    @media (max-width: 600px) {
+      .trust-divider { display: none; }
+      .hedg-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <img src="https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg" alt="HedgStone Business Advisors" />
+    </div>
+    <a href="funnel.html" class="nav-cta">Get My Free Valuation &rarr;</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Free &amp; Confidential
+    </div>
+    <h1>What Is Your<br /><em>Business Worth?</em></h1>
+    <p>Get an industry-standard valuation estimate in under 3 minutes — no obligation, no cost, and completely confidential.</p>
+    <div class="hero-actions">
+      <a href="funnel.html" class="btn btn-primary btn-lg">
+        Start Free Valuation
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item">
+        <span class="num">300+</span>
+        <span class="label">Agents Nationwide</span>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <span class="num">10M+</span>
+        <span class="label">Social Reach / Month</span>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <span class="num">100%</span>
+        <span class="label">Confidential</span>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <span class="num">$0</span>
+        <span class="label">Cost to You</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="container">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">Simple. Fast. Confidential.</h2>
+    <p class="section-subtitle">In three easy steps, you'll have a clear picture of what your business could sell for — and a seasoned broker in your corner.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Share Your Details</h3>
+        <p>Answer a few quick questions about your business — takes less than 3 minutes. No sensitive documents required.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>Get Your Valuation</h3>
+        <p>We apply industry-standard multiples to generate a realistic estimated value range based on your financials and sector.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>Connect With John</h3>
+        <p>Receive your branded valuation report and a personal follow-up to discuss your goals, timeline, and next steps.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <h3>Go to Market</h3>
+        <p>If you choose to move forward, leverage our buyer network of private individuals, family offices, and PE firms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BROKER BIO -->
+<section class="bio-section">
+  <div class="container">
+    <div class="bio-inner">
+      <div class="bio-image-wrap">
+        <img src="assets/john-matsis.jpg" alt="John Matsis – Business & Investment Property Broker" />
+      </div>
+      <div class="bio-content">
+        <div class="section-label">Your Broker</div>
+        <h2 class="name">John Matsis</h2>
+        <div class="title-tag">Business &amp; Investment Property Broker and Principal</div>
+        <p>I bring hands-on experience building, acquiring, exiting, and investing in businesses and real estate of all types. I'm deeply involved at every stage of the process — from the first conversation to the final closing — because what is often a complex transaction deserves a steady, knowledgeable hand guiding it toward the best possible outcome.</p>
+        <p>Confidentiality, deep knowledge across a wide span of industries and investment assets, and the ability to harness technology to streamline and scale are the primary hallmarks of my work. When you're ready to explore what your business could be worth — and what comes next — I'm here to help you navigate it with clarity and confidence.</p>
+        <div class="bio-contact">
+          <a href="tel:2126780100">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            (212) 678-0100
+          </a>
+          <a href="mailto:john.matsis@hedgestone.com">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            john.matsis@hedgestone.com
+          </a>
+          <a href="https://www.instagram.com/johnmatsis" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            @johnmatsis
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEDGSTONE -->
+<section>
+  <div class="container">
+    <div class="hedg-inner">
+      <div class="hedg-content">
+        <div class="section-label">Backed By</div>
+        <h2 class="section-title">HedgStone Business Advisors</h2>
+        <p>I operate as part of HedgStone Business Advisors — one of the most powerful business brokerage networks in the country. With a team of over 300 agents nationwide, we combine local expertise with a national reach that gives your business maximum exposure to qualified buyers.</p>
+        <p>Our buyer pool includes private individuals, family offices, private equity firms, and successful operators who are always seeking their next acquisition. With 10 million social media views per month and a platform built to match sellers with the right buyers, HedgStone delivers results.</p>
+        <div class="hedg-stats">
+          <div class="hedg-stat">
+            <div class="value">300+</div>
+            <div class="desc">Agents across the US</div>
+          </div>
+          <div class="hedg-stat">
+            <div class="value">10M</div>
+            <div class="desc">Social views per month</div>
+          </div>
+          <div class="hedg-stat">
+            <div class="value">PE &amp; FO</div>
+            <div class="desc">Institutional buyer access</div>
+          </div>
+          <div class="hedg-stat">
+            <div class="value">100%</div>
+            <div class="desc">Confidential process</div>
+          </div>
+        </div>
+      </div>
+      <div class="hedg-logo-box">
+        <img src="https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg" alt="HedgStone Business Advisors" />
+        <p>A national network of business brokers and advisors committed to helping owners exit on their terms — with maximum value and full confidentiality.</p>
+        <a href="funnel.html" class="btn btn-outline">Get My Free Valuation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="section-label">Ready?</div>
+  <h2 class="section-title">Find Out What Your Business Is Worth</h2>
+  <p>It takes less than 3 minutes. No commitment, no cost — just clarity.</p>
+  <a href="funnel.html" class="btn btn-primary btn-lg">
+    Start My Free Valuation
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+  </a>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg" alt="HedgStone Business Advisors" />
+        <p>John Matsis &mdash; Business &amp; Investment Property Broker and Principal. Backed by HedgStone Business Advisors.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:2126780100">(212) 678-0100</a></li>
+          <li><a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 John Matsis &mdash; HedgStone Business Advisors. All rights reserved.</p>
+      <p><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
