@@ -176,6 +176,54 @@ footer {
 }
 .footer-bottom p { font-size: 0.8rem; color: var(--muted); }
 
+/* ─── ANIMATIONS ────────────────────────────────────────────────────────── */
+.anim {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1),
+              transform 0.65s cubic-bezier(0.22,1,0.36,1);
+}
+.anim.anim-left  { transform: translateX(-36px); }
+.anim.anim-right { transform: translateX(36px); }
+.anim.anim-scale { transform: scale(0.94); }
+.anim.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.anim-delay-0 { transition-delay: 0ms; }
+.anim-delay-1 { transition-delay: 100ms; }
+.anim-delay-2 { transition-delay: 200ms; }
+.anim-delay-3 { transition-delay: 300ms; }
+.anim-delay-4 { transition-delay: 400ms; }
+.anim-delay-5 { transition-delay: 500ms; }
+
+/* Card hover lift */
+.step-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+  border-color: rgba(45,184,127,0.35);
+}
+
+/* Stat card hover */
+.hedg-stat {
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.hedg-stat:hover {
+  transform: translateY(-3px);
+  border-color: rgba(45,184,127,0.4);
+}
+
+/* Button pulse on hero */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(45,184,127,0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(45,184,127,0); }
+  100% { box-shadow: 0 0 0 0 rgba(45,184,127,0); }
+}
+.btn-pulse { animation: pulse-ring 2.4s ease infinite; }
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   section { padding: 72px 0; }
