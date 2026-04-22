@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Business Valuation | John Matsis – HedgStone Business Advisors</title>
   <link rel="stylesheet" href="assets/styles.css" />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     body { min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -551,6 +552,9 @@
         <strong style="color:var(--gold);">🔒 100% Confidential:</strong> Your information is never shared with third parties. By submitting, you agree to our <a href="privacy.html" target="_blank">Privacy Policy</a> and <a href="terms.html" target="_blank">Terms &amp; Conditions</a>.
       </div>
 
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAADBTjHwWt_PaZpue" data-theme="dark" style="margin-top:20px;"></div>
+      <div class="error-msg" id="err-captcha" style="margin-top:6px;">Please complete the security check.</div>
+
       <div class="form-nav">
         <button type="button" class="btn-back" onclick="prevStep(4)">Back</button>
         <button type="button" class="btn-next" id="submitBtn" onclick="submitForm()">
@@ -651,6 +655,15 @@
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       err('ownerEmail', !emailOk); if (!emailOk) valid = false;
       err('ownerPhone', !phone); if (!phone) valid = false;
+
+      const captcha = document.querySelector('[name="cf-turnstile-response"]')?.value;
+      const captchaErr = document.getElementById('err-captcha');
+      if (!captcha) {
+        captchaErr.classList.add('show');
+        valid = false;
+      } else {
+        captchaErr.classList.remove('show');
+      }
     }
 
     return valid;
@@ -724,6 +737,7 @@
           'email':            data.ownerEmail,  // Formspree uses "email" key for reply-to
           'Phone':            data.ownerPhone,
           'Submitted At':     data.submittedAt,
+          'cf-turnstile-response': document.querySelector('[name="cf-turnstile-response"]')?.value,
         })
       }).catch(() => {}); // Silently ignore network errors — lead is in localStorage
     }
