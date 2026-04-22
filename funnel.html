@@ -720,18 +720,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
-            'Business Name':    data.businessName,
-            'Industry':         data.industry,
-            'Website':          data.websiteUrl,
-            'Years in Business':data.yearsInBusiness,
-            'Gross Revenue':    '$' + data.grossRevenue.toLocaleString(),
-            'Net Income':       '$' + data.netIncome.toLocaleString(),
-            'Reason for Selling':data.reasonForSelling,
-            'Preferred Contact':data.contactMethod,
-            'Owner Name':       data.ownerName,
-            'email':            data.ownerEmail,
-            'Phone':            data.ownerPhone,
-            'Submitted At':     data.submittedAt,
+            ...data,
             'cf-turnstile-response': document.querySelector('[name="cf-turnstile-response"]')?.value,
           })
         });
