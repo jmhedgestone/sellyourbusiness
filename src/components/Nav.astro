@@ -1,0 +1,35 @@
+---
+export interface Props {
+  variant?: 'home' | 'funnel' | 'report' | 'legal';
+}
+const { variant = 'home' } = Astro.props;
+const isHome = variant === 'home';
+---
+
+<nav>
+  <div class="nav-inner">
+    {isHome ? (
+      <div class="nav-logo">
+        <img
+          src="https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg"
+          alt="HedgeStone Business Advisors"
+        />
+      </div>
+    ) : (
+      <a href="/" class="nav-logo">
+        <img
+          src="https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg"
+          alt="HedgeStone Business Advisors"
+        />
+      </a>
+    )}
+
+    {isHome && <a href="/funnel" class="nav-cta">Get My Free Valuation &rarr;</a>}
+    {variant === 'funnel' && (
+      <div style="font-size:0.85rem;color:var(--muted);">Free &amp; Confidential Valuation</div>
+    )}
+    {variant === 'report' && (
+      <div style="font-size:0.85rem;color:var(--muted);">Confidential Valuation Report</div>
+    )}
+  </div>
+</nav>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Nav variant="legal" />
+  <div class="legal-wrap">
+    <slot />
+  </div>
+  <Footer variant="minimal" />
+</BaseLayout>
+
+<style is:global>
+  .legal-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 120px 24px 80px;
+  }
+  .legal-wrap h1 { font-size: 2.4rem; margin-bottom: 8px; }
+  .legal-wrap .effective { font-size: 0.85rem; color: var(--muted); margin-bottom: 48px; }
+  .legal-wrap h2 { font-size: 1.25rem; color: var(--gold); margin: 36px 0 12px; font-family: 'Inter', sans-serif; font-weight: 700; }
+  .legal-wrap p, .legal-wrap li { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 12px; }
+  .legal-wrap ul { padding-left: 24px; }
+  .legal-wrap a { color: var(--gold); }
+  .legal-wrap hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+</style>

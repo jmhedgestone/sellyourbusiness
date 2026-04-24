@@ -1,0 +1,515 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  answer: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  author?: string;
+  pillar: string;
+  pillarTitle: string;
+  pillarHref: string;
+  slug: string;
+  faqs?: { question: string; answer: string }[];
+  relatedArticles?: { title: string; href: string; description: string }[];
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  answer,
+  publishDate,
+  updatedDate,
+  author = 'John Matsis',
+  pillar,
+  pillarTitle,
+  pillarHref,
+  slug,
+  faqs = [],
+  relatedArticles = [],
+  ogImage,
+} = Astro.props;
+
+const siteUrl = 'https://sellyourbusiness.com';
+const pageUrl = new URL(`${pillarHref}/${slug}`, siteUrl).toString();
+
+// Per-article schema: Article + BreadcrumbList + (optional) FAQPage.
+// The `answer` field is lifted into Article.description and the first Q&A.
+const schema: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: answer,
+    author: {
+      '@type': 'Person',
+      name: author,
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: siteUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    datePublished: publishDate.toISOString(),
+    dateModified: (updatedDate ?? publishDate).toISOString(),
+    mainEntityOfPage: pageUrl,
+    image: new URL(ogImage ?? '/assets/john-matsis.jpg', siteUrl).toString(),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: pillarTitle, item: new URL(pillarHref, siteUrl).toString() },
+      { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
+    ],
+  },
+];
+
+if (faqs.length > 0) {
+  schema.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  });
+}
+
+const pubLabel = publishDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const updLabel = updatedDate
+  ? updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  : null;
+---
+
+<BaseLayout
+  title={`${title} | SellYourBusiness.com`}
+  description={description}
+  ogType="article"
+  ogImage={ogImage}
+  schema={schema}
+  publishedTime={publishDate.toISOString()}
+  modifiedTime={(updatedDate ?? publishDate).toISOString()}
+>
+  <Nav variant="legal" />
+
+  <div class="article-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href={pillarHref}>{pillarTitle}</a>
+      <span>›</span>
+      <span class="current">{title}</span>
+    </nav>
+
+    <header class="article-header">
+      <div class="eyebrow">{pillarTitle}</div>
+      <h1>{title}</h1>
+      <div class="meta">
+        <span>By <strong>{author}</strong></span>
+        <span>·</span>
+        <span>Published {pubLabel}</span>
+        {updLabel && <><span>·</span><span>Updated {updLabel}</span></>}
+      </div>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>{answer}</p>
+    </div>
+
+    <article class="article-body">
+      <slot />
+    </article>
+
+    {faqs.length > 0 && (
+      <section class="article-faqs">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          {faqs.map((f) => (
+            <details class="faq-item">
+              <summary>{f.question}</summary>
+              <p>{f.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="author-bio">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>{author}</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors, a
+          national brokerage network with 300+ agents serving private sellers, family offices, and
+          private equity firms. He has hands-on experience building, acquiring, exiting, and
+          investing in businesses and real estate across a wide range of industries.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="article-cta">
+      <h3>Thinking about selling your business?</h3>
+      <p>Get a free, confidential valuation estimate in under 3 minutes.</p>
+      <a href="/funnel" class="btn btn-primary btn-lg">Start My Free Valuation →</a>
+    </section>
+
+    {relatedArticles.length > 0 && (
+      <section class="related-articles">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+          {relatedArticles.map((r) => (
+            <a href={r.href} class="related-card">
+              <h4>{r.title}</h4>
+              <p>{r.description}</p>
+              <span class="read-more">Read more →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+
+  <Footer variant="full" />
+</BaseLayout>
+
+<style is:global>
+  .article-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 110px 24px 80px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .breadcrumb a { color: var(--muted); }
+  .breadcrumb a:hover { color: var(--gold); }
+  .breadcrumb .current { color: var(--text); }
+
+  .article-header { margin-bottom: 32px; }
+  .article-header .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .article-header h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .article-header .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .article-header .meta strong { color: var(--text); font-weight: 600; }
+
+  .answer-box {
+    background: rgba(45,184,127,0.06);
+    border: 1px solid rgba(45,184,127,0.25);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 32px 0 48px;
+  }
+  .answer-box .answer-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .answer-box p {
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .article-body {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .article-body > * + * { margin-top: 1.2em; }
+  .article-body h2 {
+    font-size: 1.65rem;
+    color: var(--text);
+    margin-top: 2em;
+    margin-bottom: 0.4em;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .article-body h3 {
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-top: 1.5em;
+    margin-bottom: 0.4em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+  .article-body p { color: var(--muted); }
+  .article-body p strong { color: var(--text); }
+  .article-body a { color: var(--gold); border-bottom: 1px solid rgba(45,184,127,0.3); }
+  .article-body a:hover { border-bottom-color: var(--gold); }
+  .article-body ul, .article-body ol { padding-left: 24px; color: var(--muted); }
+  .article-body li { margin-bottom: 8px; line-height: 1.75; }
+  .article-body li strong { color: var(--text); }
+  .article-body blockquote {
+    border-left: 3px solid var(--gold);
+    padding: 4px 0 4px 20px;
+    margin: 1.2em 0;
+    color: var(--text);
+    font-style: italic;
+  }
+  .article-body code {
+    background: var(--card);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  .article-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2em 0;
+    font-size: 0.92rem;
+  }
+  .article-body th, .article-body td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .article-body th {
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .article-body td { color: var(--muted); }
+  .article-body td strong { color: var(--text); }
+
+  .article-faqs {
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .article-faqs h2 {
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .faq-list { display: flex; flex-direction: column; gap: 12px; }
+  .faq-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    transition: border-color 0.2s;
+  }
+  .faq-item[open] { border-color: rgba(45,184,127,0.4); }
+  .faq-item summary {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    padding-right: 28px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.3rem;
+    color: var(--gold);
+    transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item p {
+    margin-top: 14px;
+    color: var(--muted);
+    line-height: 1.75;
+    font-size: 0.95rem;
+  }
+
+  .author-bio {
+    margin-top: 72px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .author-bio img {
+    width: 120px;
+    height: 140px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 10px;
+    border: 2px solid rgba(45,184,127,0.3);
+  }
+  .author-bio .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .author-bio h3 {
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .author-bio .author-title {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .author-bio p {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .author-contact {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .author-contact a { color: var(--gold); }
+
+  .article-cta {
+    margin-top: 56px;
+    padding: 44px 32px;
+    background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
+    border: 1px solid rgba(45,184,127,0.25);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .article-cta h3 {
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .article-cta p {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .related-articles {
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .related-articles h2 {
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .related-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(45,184,127,0.4);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  }
+  .related-card h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .related-card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+    flex: 1;
+  }
+  .related-card .read-more {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  @media (max-width: 680px) {
+    .author-bio {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .author-bio img { margin: 0 auto; }
+    .author-contact { justify-content: center; }
+  }
+</style>
