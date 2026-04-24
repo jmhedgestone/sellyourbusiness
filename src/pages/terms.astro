@@ -1,35 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terms & Conditions | SellYourBusiness.com</title>
-  <link rel="stylesheet" href="assets/styles.css" />
-  <style>
-    .legal-wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 120px 24px 80px;
-    }
-    .legal-wrap h1 { font-size: 2.4rem; margin-bottom: 8px; }
-    .legal-wrap .effective { font-size: 0.85rem; color: var(--muted); margin-bottom: 48px; }
-    .legal-wrap h2 { font-size: 1.25rem; color: var(--gold); margin: 36px 0 12px; font-family: 'Inter', sans-serif; font-weight: 700; }
-    .legal-wrap p, .legal-wrap li { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 12px; }
-    .legal-wrap ul { padding-left: 24px; }
-    .legal-wrap a { color: var(--gold); }
-    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
-  </style>
-</head>
-<body>
-<nav>
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
-      <img src="https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg" alt="HedgStone Business Advisors" />
-    </a>
-  </div>
-</nav>
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+---
 
-<div class="legal-wrap">
+<LegalLayout
+  title="Terms & Conditions | SellYourBusiness.com"
+  description="Terms and Conditions governing use of SellYourBusiness.com and its valuation tools."
+>
   <h1>Terms &amp; Conditions</h1>
   <p class="effective">Last Updated: September 25, 2023</p>
 
@@ -87,15 +63,4 @@
 
   <hr />
   <p style="font-size:0.8rem;">Adapted from the HedgeStone Business Advisors Terms &amp; Conditions. &copy; HedgeStone Group, LLC. All rights reserved.</p>
-</div>
-
-<footer>
-  <div class="footer-inner">
-    <div class="footer-bottom">
-      <p>&copy; 2024 John Matsis &mdash; HedgStone Business Advisors. All rights reserved.</p>
-      <p><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></p>
-    </div>
-  </div>
-</footer>
-</body>
-</html>
+</LegalLayout>

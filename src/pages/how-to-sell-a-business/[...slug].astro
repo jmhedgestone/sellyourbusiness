@@ -1,0 +1,48 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'how-to-sell');
+  return all.map((a) => ({
+    params: { slug: a.slug },
+    props: { entry: a },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Resolve relatedArticles (slugs) into { title, href, description } for the layout.
+const related = [];
+if (entry.data.relatedArticles) {
+  for (const slug of entry.data.relatedArticles) {
+    const rel = await getEntry('articles', slug);
+    if (rel) {
+      related.push({
+        title: rel.data.title,
+        description: rel.data.description,
+        href: `/how-to-sell-a-business/${rel.slug}`,
+      });
+    }
+  }
+}
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  answer={entry.data.answer}
+  publishDate={entry.data.publishDate}
+  updatedDate={entry.data.updatedDate}
+  author={entry.data.author}
+  pillar="how-to-sell"
+  pillarTitle="How to Sell a Business"
+  pillarHref="/how-to-sell-a-business"
+  slug={entry.slug}
+  faqs={entry.data.faqs}
+  relatedArticles={related}
+  ogImage={entry.data.ogImage}
+>
+  <Content />
+</ArticleLayout>

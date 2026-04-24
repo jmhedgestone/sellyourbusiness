@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /report
+Disallow: /api/
+
+Sitemap: https://sellyourbusiness.com/sitemap-index.xml

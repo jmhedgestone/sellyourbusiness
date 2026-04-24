@@ -1,0 +1,484 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'How to Sell a Business: The Complete Guide (2026)';
+const description =
+  'Step-by-step guide to selling a small or mid-market business — from preparation and valuation through confidential marketing, LOI, due diligence, and closing. Written by John Matsis, business broker and principal at HedgeStone Business Advisors.';
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'how-to-sell')
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const pageUrl = 'https://sellyourbusiness.com/how-to-sell-a-business';
+
+// Pillar-page schema: Article (overview), ItemList (spoke articles), FAQPage, BreadcrumbList.
+// LLMs use ItemList to map the topic cluster; FAQPage powers answer-box extraction.
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'How to Sell a Business', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'How to Sell a Business — Step-by-Step',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What are the main steps to sell a business?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Selling a business typically follows six steps: (1) prepare financials and clean up the books, (2) get a professional valuation, (3) engage a broker and sign a listing agreement, (4) market confidentially via teaser and CIM under NDA, (5) negotiate offers and sign a Letter of Intent, (6) complete due diligence and close. The full process usually takes 6–12 months.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do I need a business broker to sell my company?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'A broker is not legally required, but most owners of businesses over $500K in value use one. Brokers maintain confidentiality, reach more qualified buyers, create competitive tension, and typically recover their fee through a higher sale price. For businesses under $250K with a pre-identified buyer, a transaction attorney alone may suffice.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'When is the best time to sell a business?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'The best time to sell is after three consecutive years of stable or growing SDE, when the business is not dependent on a single customer or the owner, and when industry multiples are at or above long-run averages. Selling from a position of strength — not when you are burned out — maximizes price and terms.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How much does it cost to sell a business?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'The largest cost is broker commission, typically 8–12% on businesses under $5M (Lehman-style tiered rates on larger deals). Add $2K–$10K for legal fees, optional QoE for $5K–$40K, and potential tax advisory fees. All fees except retainers are usually contingent on closing.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap: Record<string, { step: number; label: string }> = {
+  'when-to-sell-a-business': { step: 1, label: 'Timing' },
+  'how-to-prepare-your-business-for-sale': { step: 2, label: 'Preparation' },
+  'how-long-does-it-take-to-sell-a-business': { step: 3, label: 'Timeline' },
+  'business-broker-vs-selling-yourself': { step: 4, label: 'Representation' },
+  'letter-of-intent-business-sale': { step: 5, label: 'LOI & Closing' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <span class="current">How to Sell a Business</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">The Complete Guide</div>
+      <h1>How to Sell a Business</h1>
+      <p class="lede">
+        A practical, step-by-step playbook for selling a small or mid-market business — from
+        deciding the right time to exit, through preparation, valuation, confidential marketing,
+        negotiation, and closing. Written by John Matsis, a business broker and principal at
+        HedgeStone Business Advisors.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        Selling a business is a six-step process: (1) prepare your financials, (2) get a valuation,
+        (3) engage a broker, (4) market confidentially under NDA, (5) negotiate and sign a Letter
+        of Intent, and (6) complete due diligence and close. Most small- and mid-market sales take
+        6–12 months end-to-end. Clean books, low owner dependence, and three years of growing SDE
+        drive the highest multiples.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>Who this guide is for</h2>
+      <p>
+        If you own a business generating between $250K and $15M in annual revenue and are thinking
+        about an exit in the next 6–36 months, this guide is for you. It covers the full arc: when
+        to start, how to prepare, how brokers work, how buyers think, and what happens between
+        accepting an offer and wiring the funds at closing.
+      </p>
+      <p>
+        Every article is written from the perspective of a working broker — not a textbook. The
+        numbers, timelines, and examples reflect what actually happens on deals we close, not
+        generic advice scraped from the internet.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>The six-step process</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/how-to-sell-a-business/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/how-to-sell-a-business/${a.slug}`} class="read-more">Read this step →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Want to know what your business is worth?</h2>
+      <p>
+        Before you invest 6–12 months in a sale process, start with the number. Our free, confidential
+        valuation estimate takes 3 minutes and uses the same SDE-multiple method brokers use to
+        price businesses in your industry.
+      </p>
+      <a href="/funnel" class="btn btn-primary btn-lg">Get My Free Valuation →</a>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>What are the main steps to sell a business?</summary>
+          <p>
+            Selling a business typically follows six steps: prepare financials and clean up the
+            books, get a professional valuation, engage a broker and sign a listing agreement,
+            market confidentially via teaser and CIM under NDA, negotiate offers and sign a Letter
+            of Intent, then complete due diligence and close. The full process usually takes 6–12
+            months.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Do I need a business broker to sell my company?</summary>
+          <p>
+            A broker is not legally required, but most owners of businesses over $500K in value use
+            one. Brokers maintain confidentiality, reach more qualified buyers, create competitive
+            tension, and typically recover their fee through a higher sale price. For businesses
+            under $250K with a pre-identified buyer, a transaction attorney alone may suffice.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>When is the best time to sell a business?</summary>
+          <p>
+            The best time to sell is after three consecutive years of stable or growing SDE, when
+            the business is not dependent on a single customer or the owner, and when industry
+            multiples are at or above long-run averages. Selling from a position of strength — not
+            when you are burned out — maximizes price and terms.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How much does it cost to sell a business?</summary>
+          <p>
+            The largest cost is broker commission, typically 8–12% on businesses under $5M (Lehman-style
+            tiered rates on larger deals). Add $2K–$10K for legal fees, optional Quality of Earnings
+            for $5K–$40K, and potential tax advisory fees. All fees except retainers are usually
+            contingent on closing.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors, a
+          national brokerage network with 300+ agents serving private sellers, family offices, and
+          private equity firms. He has hands-on experience building, acquiring, exiting, and
+          investing in businesses and real estate across a wide range of industries.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+</BaseLayout>
+
+<style is:global>
+  .hub-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 110px 24px 80px;
+  }
+
+  .hub-wrap .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .hub-wrap .breadcrumb a { color: var(--muted); }
+  .hub-wrap .breadcrumb a:hover { color: var(--gold); }
+  .hub-wrap .breadcrumb .current { color: var(--text); }
+
+  .hub-header { margin-bottom: 32px; }
+  .hub-header .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .hub-header h1 {
+    font-size: clamp(2.25rem, 5vw, 3.4rem);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -0.015em;
+  }
+  .hub-header .lede {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  .hub-intro { margin-top: 56px; }
+  .hub-intro h2 {
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .hub-intro p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+
+  .hub-steps { margin-top: 72px; }
+  .hub-steps h2 {
+    font-size: 1.75rem;
+    color: var(--text);
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+  }
+  .step-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .step-entry {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 20px;
+    padding: 24px 28px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .step-entry:hover {
+    border-color: rgba(45,184,127,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  }
+  .step-entry .step-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .step-entry .step-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .step-entry h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .step-entry h3 a { color: var(--text); }
+  .step-entry h3 a:hover { color: var(--gold); }
+  .step-entry p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .step-entry .read-more {
+    font-size: 0.88rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .hub-cta {
+    margin-top: 72px;
+    padding: 48px 36px;
+    background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
+    border: 1px solid rgba(45,184,127,0.25);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .hub-cta h2 {
+    font-size: 1.75rem;
+    color: var(--text);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hub-cta p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 auto 24px;
+  }
+
+  .hub-faqs { margin-top: 72px; }
+  .hub-faqs h2 {
+    font-size: 1.75rem;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .hub-author {
+    margin-top: 72px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .hub-author img {
+    width: 120px;
+    height: 140px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 10px;
+    border: 2px solid rgba(45,184,127,0.3);
+  }
+  .hub-author .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .hub-author h3 {
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .hub-author .author-title {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .hub-author p {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .hub-author .author-contact {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .hub-author .author-contact a { color: var(--gold); }
+
+  @media (max-width: 680px) {
+    .step-entry {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 22px 22px;
+    }
+    .hub-author {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .hub-author img { margin: 0 auto; }
+    .hub-author .author-contact { justify-content: center; }
+  }
+</style>
