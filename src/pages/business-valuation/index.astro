@@ -1,0 +1,265 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
+
+const title = 'Business Valuation: A Practical Guide for Sellers (2026)';
+const description =
+  'How small- and mid-market businesses are actually valued — SDE multiples, EBITDA, add-backs, industry benchmarks, and the levers that move your number. Written by John Matsis, business broker and principal at HedgeStone Business Advisors.';
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'valuation')
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const pageUrl = 'https://sellyourbusiness.com/business-valuation';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'Business Valuation', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'Business Valuation — Step-by-Step',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How is a small business valued?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            "Most small businesses are valued by applying an industry-specific multiple to Seller's Discretionary Earnings (SDE) — typically 1.5x to 6x. Mid-market businesses ($1M+ in earnings) often shift to EBITDA-based multiples of 3x to 8x. The multiple is driven by industry, growth trajectory, customer concentration, owner dependence, and recurring revenue percentage.",
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is SDE in business valuation?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            "Seller's Discretionary Earnings (SDE) is the total financial benefit available to a single working owner — net income plus owner's salary, owner perks, interest, taxes, depreciation, amortization, and one-time non-recurring expenses. It's the standard earnings metric for businesses under $1M in profit and forms the base of the valuation multiple.",
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the difference between SDE and EBITDA?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'SDE includes the owner\'s salary as part of the earnings base; EBITDA does not. SDE is used for owner-operated businesses (typically under $1M earnings) where one full-time owner is essential. EBITDA applies to businesses run by professional management or where the buyer would replace the owner with a hired CEO. For larger or PE-targeted businesses, EBITDA-based valuation is standard.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What are add-backs in business valuation?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Add-backs are non-recurring, discretionary, or personal expenses removed from reported expenses to arrive at true earning power (SDE or adjusted EBITDA). Common add-backs: owner salary above market rate, family member compensation, personal vehicles and travel, one-time legal fees, and one-time IT or facility upgrades. Buyers and brokers scrutinize add-backs heavily — every dollar must be defensible with documentation.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap = {
+  'what-is-sde-sellers-discretionary-earnings': { step: 1, label: 'Earnings Basics' },
+  'business-valuation-multiples-by-industry': { step: 2, label: 'Industry Benchmarks' },
+  'ebitda-vs-sde-business-valuation': { step: 3, label: 'Earnings Methodology' },
+  'add-backs-business-valuation': { step: 4, label: 'Adjustments' },
+  'how-to-increase-business-valuation-before-selling': { step: 5, label: 'Value Levers' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <span class="current">Business Valuation</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">Practical Guide</div>
+      <h1>Business Valuation</h1>
+      <p class="lede">
+        How small- and mid-market businesses are actually valued — what brokers, buyers, and
+        lenders use to put a number on your company. Written from the perspective of a working
+        broker, not a textbook.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        Most small businesses are valued by applying an industry multiple (1.5x–6x) to Seller's
+        Discretionary Earnings — net income plus owner salary, owner perks, interest, taxes,
+        depreciation, and one-time expenses. Mid-market businesses (over $1M earnings) shift to
+        EBITDA-based multiples of 3x–8x. Multiples are driven by industry, growth, customer
+        concentration, owner dependence, and recurring revenue. The single biggest lever owners
+        control is reducing owner-dependence in the 12 months before listing.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>What you'll learn here</h2>
+      <p>
+        Valuation is the part of selling a business owners get most wrong — usually because they're
+        comparing themselves to public-market headlines or the wrong industry's multiples. The
+        articles below cover the foundations every owner needs before entering a sale conversation:
+        what SDE actually is, how multiples vary by industry, when EBITDA replaces SDE, what
+        add-backs you can defend, and the practical levers that move your number in the months
+        before going to market.
+      </p>
+      <p>
+        These pages pair with our <a href="/how-to-sell-a-business">complete guide to selling a
+        business</a> — valuation is step 2 of that process, but it deserves its own deep dive.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>The five things every owner should understand</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/business-valuation/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/business-valuation/${a.slug}`} class="read-more">Read this guide →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Want a real number, not a range?</h2>
+      <p>
+        Reading about multiples is useful. Knowing your specific number is more useful. Our free,
+        confidential valuation estimate applies the same SDE-multiple method described in these
+        articles to your actual financials — takes 3 minutes, no obligation.
+      </p>
+      <a href="/funnel" class="btn btn-primary btn-lg">Get My Free Valuation →</a>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>How is a small business valued?</summary>
+          <p>
+            Most small businesses are valued by applying an industry-specific multiple to Seller's
+            Discretionary Earnings (SDE) — typically 1.5x to 6x. Mid-market businesses ($1M+ in
+            earnings) often shift to EBITDA-based multiples of 3x to 8x. The multiple is driven by
+            industry, growth trajectory, customer concentration, owner dependence, and recurring
+            revenue percentage.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What is SDE in business valuation?</summary>
+          <p>
+            Seller's Discretionary Earnings (SDE) is the total financial benefit available to a
+            single working owner — net income plus owner's salary, owner perks, interest, taxes,
+            depreciation, amortization, and one-time non-recurring expenses. It's the standard
+            earnings metric for businesses under $1M in profit.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What is the difference between SDE and EBITDA?</summary>
+          <p>
+            SDE includes the owner's salary as part of the earnings base; EBITDA does not. SDE is
+            used for owner-operated businesses (typically under $1M earnings) where one full-time
+            owner is essential. EBITDA applies to businesses run by professional management. For
+            larger or PE-targeted businesses, EBITDA-based valuation is standard.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What are add-backs in business valuation?</summary>
+          <p>
+            Add-backs are non-recurring, discretionary, or personal expenses removed from reported
+            expenses to arrive at true earning power. Common add-backs: owner salary above market,
+            family member compensation, personal vehicles, one-time legal fees. Every add-back
+            must be defensible with documentation — buyers scrutinize them heavily.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors, a
+          national brokerage network with 300+ agents serving private sellers, family offices, and
+          private equity firms. He has hands-on experience building, acquiring, exiting, and
+          investing in businesses and real estate across a wide range of industries.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>
