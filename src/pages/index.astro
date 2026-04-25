@@ -218,19 +218,29 @@ const schema = [
     </div>
   </section>
 
-  <!-- KNOWLEDGE BASE / PILLAR LINK -->
+  <!-- KNOWLEDGE BASE / PILLAR LINKS -->
   <section class="resources-section">
     <div class="container">
       <div class="section-label anim">Knowledge Base</div>
       <h2 class="section-title anim" style="transition-delay:100ms">Selling a Business, Explained.</h2>
-      <p class="section-subtitle anim" style="transition-delay:200ms">Practical, broker-written guides on every step of selling — from preparation through closing.</p>
-      <div class="resources-grid anim-stagger">
+      <p class="section-subtitle anim" style="transition-delay:200ms">Practical, broker-written guides on selling and on how businesses are actually valued.</p>
+
+      <div class="resources-pillars anim-stagger">
         <a href="/how-to-sell-a-business" class="resource-card resource-card-hub">
           <div class="resource-eyebrow">Complete Guide</div>
           <h3>How to Sell a Business</h3>
           <p>The end-to-end playbook: timing, preparation, valuation, marketing, LOI, due diligence, and closing.</p>
           <span class="resource-link">Read the guide →</span>
         </a>
+        <a href="/business-valuation" class="resource-card resource-card-hub">
+          <div class="resource-eyebrow">Practical Guide</div>
+          <h3>Business Valuation</h3>
+          <p>How small- and mid-market businesses are actually valued — SDE, EBITDA, multiples, add-backs, and the levers that move your number.</p>
+          <span class="resource-link">Read the guide →</span>
+        </a>
+      </div>
+
+      <div class="resources-grid anim-stagger">
         <a href="/how-to-sell-a-business/when-to-sell-a-business" class="resource-card">
           <div class="resource-eyebrow">Timing</div>
           <h3>When to Sell</h3>
@@ -241,10 +251,15 @@ const schema = [
           <h3>12-Month Pre-Sale Checklist</h3>
           <p>Financial, operational, and legal cleanup that raises your multiple.</p>
         </a>
-        <a href="/how-to-sell-a-business/letter-of-intent-business-sale" class="resource-card">
-          <div class="resource-eyebrow">Negotiation</div>
-          <h3>The Letter of Intent</h3>
-          <p>What to negotiate hard before signing the LOI — and why it matters more than it looks.</p>
+        <a href="/business-valuation/what-is-sde-sellers-discretionary-earnings" class="resource-card">
+          <div class="resource-eyebrow">Valuation</div>
+          <h3>What Is SDE?</h3>
+          <p>The earnings metric used to value most small businesses — and why your tax-return net income is the wrong number.</p>
+        </a>
+        <a href="/business-valuation/business-valuation-multiples-by-industry" class="resource-card">
+          <div class="resource-eyebrow">Benchmarks</div>
+          <h3>Multiples by Industry (2026)</h3>
+          <p>What multiples businesses actually sell for — service, manufacturing, healthcare, online, and more.</p>
         </a>
       </div>
     </div>
@@ -529,16 +544,25 @@ const schema = [
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
   }
+  .resources-pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+    margin-top: 48px;
+  }
+  .resources-pillars .resource-card-hub {
+    background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
+    border-color: rgba(45,184,127,0.3);
+    padding: 32px;
+  }
+  .resources-pillars .resource-card-hub h3 {
+    font-size: 1.6rem;
+  }
   .resources-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 18px;
-    margin-top: 48px;
-  }
-  .resources-grid .resource-card-hub {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
-    border-color: rgba(45,184,127,0.3);
+    margin-top: 18px;
   }
   .resource-card {
     background: var(--card);
