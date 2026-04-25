@@ -54,12 +54,12 @@ nav {
   max-width: 1160px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 68px;
+  height: 104px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.nav-logo img { height: 36px; }
+.nav-logo img { height: 72px; }
 .nav-cta {
   background: var(--gold);
   color: #0d1117;
