@@ -229,4 +229,7 @@ footer {
   section { padding: 72px 0; }
   .btn-lg { font-size: 1rem; padding: 14px 28px; }
   .footer-top { flex-direction: column; }
+  /* Cap the doubled nav logo on small screens so it doesn't crowd the CTA */
+  .nav-inner { height: 84px; }
+  .nav-logo img { height: 52px; }
 }

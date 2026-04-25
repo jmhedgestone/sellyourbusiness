@@ -24,6 +24,9 @@ const { title, description } = Astro.props;
     margin: 0 auto;
     padding: 160px 24px 80px;
   }
+  @media (max-width: 768px) {
+    .legal-wrap { padding-top: 140px; }
+  }
   .legal-wrap h1 { font-size: 2.4rem; margin-bottom: 8px; }
   .legal-wrap .effective { font-size: 0.85rem; color: var(--muted); margin-bottom: 48px; }
   .legal-wrap h2 { font-size: 1.25rem; color: var(--gold); margin: 36px 0 12px; font-family: 'Inter', sans-serif; font-weight: 700; }
