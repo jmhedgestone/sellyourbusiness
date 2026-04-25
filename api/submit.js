@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const crypto = require('crypto');
 
 const YEARS_LABEL = {
   under1: 'Under 1 year',
@@ -7,6 +8,93 @@ const YEARS_LABEL = {
   '5to10': '5 – 10 years',
   over10:  '10+ years',
 };
+
+// SHA-256 hex hash of a normalized string. Meta CAPI requires hashed PII.
+function sha256(value) {
+  if (!value) return undefined;
+  return crypto.createHash('sha256').update(String(value).trim().toLowerCase()).digest('hex');
+}
+
+// E.164-ish normalization: digits only. CAPI hashes phone after normalization.
+function normPhone(value) {
+  if (!value) return undefined;
+  const digits = String(value).replace(/\D/g, '');
+  return digits || undefined;
+}
+
+// Read a cookie value from the raw Cookie header.
+function readCookie(req, name) {
+  const header = req.headers && (req.headers.cookie || req.headers.Cookie);
+  if (!header) return undefined;
+  const parts = header.split(';');
+  for (const p of parts) {
+    const [k, ...rest] = p.trim().split('=');
+    if (k === name) return rest.join('=');
+  }
+  return undefined;
+}
+
+// Best-effort client IP from forwarded headers (Vercel sets x-forwarded-for).
+function clientIp(req) {
+  const xff = req.headers['x-forwarded-for'];
+  if (typeof xff === 'string') return xff.split(',')[0].trim();
+  return req.headers['x-real-ip'] || undefined;
+}
+
+// Fire a Meta Conversions API Lead event. Best-effort: never throws, never
+// blocks the response. Uses the same eventId the browser pixel fired so
+// Meta dedupes the two signals.
+async function sendCapiLead(req, d) {
+  const pixelId = process.env.PUBLIC_META_PIXEL_ID;
+  const token = process.env.META_CAPI_TOKEN;
+  if (!pixelId || !token) return { skipped: 'missing pixel id or token' };
+
+  const userData = {
+    em: sha256(d.ownerEmail) ? [sha256(d.ownerEmail)] : undefined,
+    ph: sha256(normPhone(d.ownerPhone)) ? [sha256(normPhone(d.ownerPhone))] : undefined,
+    fn: sha256((d.ownerName || '').split(' ')[0]) ? [sha256((d.ownerName || '').split(' ')[0])] : undefined,
+    ln: sha256((d.ownerName || '').split(' ').slice(1).join(' ')) ? [sha256((d.ownerName || '').split(' ').slice(1).join(' '))] : undefined,
+    client_ip_address: clientIp(req),
+    client_user_agent: req.headers['user-agent'],
+    fbp: readCookie(req, '_fbp'),
+    fbc: readCookie(req, '_fbc'),
+  };
+  // Strip undefined keys so Meta doesn't reject the payload.
+  Object.keys(userData).forEach((k) => userData[k] === undefined && delete userData[k]);
+
+  const event = {
+    event_name: 'Lead',
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: d.eventId, // dedup key — must match the browser pixel's eventID
+    event_source_url: req.headers['referer'] || `https://${req.headers['host'] || 'sellyourbusiness.com'}/funnel`,
+    action_source: 'website',
+    user_data: userData,
+    custom_data: {
+      content_name: 'Business Valuation Request',
+      content_category: d.industry || 'unspecified',
+      currency: 'USD',
+      value: 0,
+    },
+  };
+
+  const url = `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${encodeURIComponent(token)}`;
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: [event] }),
+    });
+    const body = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      console.error('CAPI error:', r.status, body);
+      return { ok: false, status: r.status, body };
+    }
+    return { ok: true, body };
+  } catch (err) {
+    console.error('CAPI fetch failed:', err);
+    return { ok: false, error: String(err) };
+  }
+}
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -146,6 +234,12 @@ module.exports = async function handler(req, res) {
   if (error) {
     console.error('Resend error:', error);
     return res.status(500).json({ error: 'Failed to send email', details: error });
+  }
+
+  // Fire Meta CAPI Lead (best-effort; do not block the user-facing response on it).
+  const capiResult = await sendCapiLead(req, d);
+  if (capiResult && capiResult.ok === false) {
+    console.warn('CAPI Lead not sent:', capiResult);
   }
 
   return res.status(200).json({ ok: true });
