@@ -364,8 +364,27 @@ const description =
 
     const FORMSPREE_ENDPOINT = '/api/submit';
 
+    // Meta Pixel: ViewContent fires once when the user reaches the funnel.
+    // Useful for retargeting and lookalike audiences.
+    if (typeof fbq === 'function') {
+      fbq('track', 'ViewContent', {
+        content_name: 'Business Valuation Funnel',
+        content_category: 'lead-generation',
+      });
+    }
+
+    function newEventId() {
+      // Used to dedupe browser pixel + server CAPI events for the same Lead.
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
+      return 'lead-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+    }
+
     async function submitForm() {
       if (!validateStep(4)) return;
+
+      const eventId = newEventId();
 
       const data = {
         businessName:    document.getElementById('businessName').value.trim(),
@@ -379,7 +398,8 @@ const description =
         ownerName:       document.getElementById('ownerName').value.trim(),
         ownerEmail:      document.getElementById('ownerEmail').value.trim(),
         ownerPhone:      document.getElementById('ownerPhone').value.trim(),
-        submittedAt:     new Date().toISOString()
+        submittedAt:     new Date().toISOString(),
+        eventId:         eventId,
       };
 
       localStorage.setItem('valuationData', JSON.stringify(data));
@@ -405,6 +425,18 @@ const description =
         }
       } catch (err) {
         console.error('Formspree fetch failed:', err);
+      }
+
+      // Meta Pixel: Lead event. Sent with the same eventID as the server-side
+      // CAPI event for deduplication. Fired client-side regardless of API
+      // success — Meta's algorithm needs the signal.
+      if (typeof fbq === 'function') {
+        fbq('track', 'Lead', {
+          content_name: 'Business Valuation Request',
+          content_category: data.industry || 'unspecified',
+          value: 0,
+          currency: 'USD',
+        }, { eventID: eventId });
       }
 
       window.location.href = '/report';

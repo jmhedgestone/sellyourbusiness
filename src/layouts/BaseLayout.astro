@@ -1,5 +1,6 @@
 ---
 import SEO from '../components/SEO.astro';
+import MetaPixel from '../components/MetaPixel.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -43,6 +44,9 @@ const {
       gtag('js', new Date());
       gtag('config', 'G-N3ZZXGVB5R');
     </script>
+
+    <!-- Meta Pixel -->
+    <MetaPixel />
 
     <SEO
       title={title}
