@@ -49,6 +49,14 @@ async function sendCapiLead(req, d) {
   const token = process.env.META_CAPI_TOKEN;
   if (!pixelId || !token) return { skipped: 'missing pixel id or token' };
 
+  // Prefer the _fbc cookie set by the browser pixel. If missing but we have
+  // an inbound fbclid from the URL, synthesize the fbc per Meta's spec:
+  //   fb.<subdomain_index>.<creation_time_ms>.<fbclid>
+  let fbc = readCookie(req, '_fbc');
+  if (!fbc && d.utms && d.utms.fbclid) {
+    fbc = `fb.1.${Date.now()}.${d.utms.fbclid}`;
+  }
+
   const userData = {
     em: sha256(d.ownerEmail) ? [sha256(d.ownerEmail)] : undefined,
     ph: sha256(normPhone(d.ownerPhone)) ? [sha256(normPhone(d.ownerPhone))] : undefined,
@@ -57,7 +65,7 @@ async function sendCapiLead(req, d) {
     client_ip_address: clientIp(req),
     client_user_agent: req.headers['user-agent'],
     fbp: readCookie(req, '_fbp'),
-    fbc: readCookie(req, '_fbc'),
+    fbc: fbc,
   };
   // Strip undefined keys so Meta doesn't reject the payload.
   Object.keys(userData).forEach((k) => userData[k] === undefined && delete userData[k]);
@@ -69,12 +77,17 @@ async function sendCapiLead(req, d) {
     event_source_url: req.headers['referer'] || `https://${req.headers['host'] || 'sellyourbusiness.com'}/funnel`,
     action_source: 'website',
     user_data: userData,
-    custom_data: {
-      content_name: 'Business Valuation Request',
-      content_category: d.industry || 'unspecified',
-      currency: 'USD',
-      value: 0,
-    },
+    custom_data: Object.assign(
+      {
+        content_name: 'Business Valuation Request',
+        content_category: d.industry || 'unspecified',
+        currency: 'USD',
+        value: 0,
+      },
+      // UTM + click-id attribution forwarded from the browser. Meta accepts
+      // arbitrary keys in custom_data and surfaces them in Events Manager.
+      d.utms && typeof d.utms === 'object' ? d.utms : {}
+    ),
   };
 
   const url = `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${encodeURIComponent(token)}`;

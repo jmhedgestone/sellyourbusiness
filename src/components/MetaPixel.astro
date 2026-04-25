@@ -20,6 +20,29 @@ const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
       fbq('init', pixelId);
       fbq('track', 'PageView');
 
+      // UTM + click-id persistence. First-touch values are stored on the
+      // first visit that carries them and never overwritten — that's the
+      // ad we'll attribute the eventual Lead to. Last-touch values are
+      // refreshed on every paid landing so we can also see the most
+      // recent campaign in case a user revisits via a different ad.
+      try {
+        var trackedKeys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','fbclid','gclid'];
+        var qp = new URLSearchParams(window.location.search);
+        var inbound = {};
+        var hasAny = false;
+        for (var i = 0; i < trackedKeys.length; i++) {
+          var v = qp.get(trackedKeys[i]);
+          if (v) { inbound[trackedKeys[i]] = v; hasAny = true; }
+        }
+        if (hasAny) {
+          inbound._t = Date.now();
+          inbound._lp = window.location.pathname;
+          var firstRaw = localStorage.getItem('syb_utm_first');
+          if (!firstRaw) localStorage.setItem('syb_utm_first', JSON.stringify(inbound));
+          localStorage.setItem('syb_utm_last', JSON.stringify(inbound));
+        }
+      } catch (_) { /* localStorage may be disabled — non-fatal */ }
+
       // Site-wide click delegate: fire Meta Contact event whenever a
       // tel: or mailto: link is clicked, anywhere on the page. Captures
       // homepage bio links, footer, article author bios, and the report

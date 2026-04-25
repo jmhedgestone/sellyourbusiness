@@ -381,10 +381,27 @@ const description =
       return 'lead-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
     }
 
+    function readUtms() {
+      // Merge first-touch + last-touch UTM/click-id state captured by
+      // the MetaPixel component on landing. First-touch wins for source
+      // attribution; last-touch fills any gaps.
+      var out = {};
+      try {
+        var last = JSON.parse(localStorage.getItem('syb_utm_last') || '{}');
+        var first = JSON.parse(localStorage.getItem('syb_utm_first') || '{}');
+        ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','fbclid','gclid'].forEach(function(k){
+          if (first[k]) out[k] = first[k];
+          else if (last[k]) out[k] = last[k];
+        });
+      } catch (_) { /* non-fatal */ }
+      return out;
+    }
+
     async function submitForm() {
       if (!validateStep(4)) return;
 
       const eventId = newEventId();
+      const utms = readUtms();
 
       const data = {
         businessName:    document.getElementById('businessName').value.trim(),
@@ -400,6 +417,7 @@ const description =
         ownerPhone:      document.getElementById('ownerPhone').value.trim(),
         submittedAt:     new Date().toISOString(),
         eventId:         eventId,
+        utms:            utms,
       };
 
       localStorage.setItem('valuationData', JSON.stringify(data));
@@ -428,15 +446,15 @@ const description =
       }
 
       // Meta Pixel: Lead event. Sent with the same eventID as the server-side
-      // CAPI event for deduplication. Fired client-side regardless of API
-      // success — Meta's algorithm needs the signal.
+      // CAPI event for deduplication. UTMs flow into custom_data so we can
+      // attribute leads to specific ad sets in Events Manager.
       if (typeof fbq === 'function') {
-        fbq('track', 'Lead', {
+        fbq('track', 'Lead', Object.assign({
           content_name: 'Business Valuation Request',
           content_category: data.industry || 'unspecified',
           value: 0,
           currency: 'USD',
-        }, { eventID: eventId });
+        }, utms), { eventID: eventId });
       }
 
       window.location.href = '/report';
