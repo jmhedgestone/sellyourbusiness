@@ -19,6 +19,27 @@ const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
       'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', pixelId);
       fbq('track', 'PageView');
+
+      // Site-wide click delegate: fire Meta Contact event whenever a
+      // tel: or mailto: link is clicked, anywhere on the page. Captures
+      // homepage bio links, footer, article author bios, and the report
+      // page broker contact row without per-page wiring.
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest && e.target.closest('a[href]');
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        var channel = null;
+        if (href.indexOf('tel:') === 0) channel = 'phone';
+        else if (href.indexOf('mailto:') === 0) channel = 'email';
+        if (!channel || typeof fbq !== 'function') return;
+        try {
+          fbq('track', 'Contact', {
+            content_name: channel === 'phone' ? 'Phone Click' : 'Email Click',
+            content_category: channel,
+            source_path: window.location.pathname,
+          });
+        } catch (_) { /* never block the navigation */ }
+      }, { capture: true });
     </script>
     <noscript>
       <img
