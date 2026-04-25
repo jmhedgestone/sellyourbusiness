@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
 
 const title = 'How to Sell a Business: The Complete Guide (2026)';
 const description =
@@ -261,6 +262,7 @@ const stepMap: Record<string, { step: number; label: string }> = {
   </div>
 
   <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
 </BaseLayout>
 
 <style is:global>
