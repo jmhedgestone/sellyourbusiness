@@ -116,6 +116,14 @@ const updLabel = updatedDate
   <Nav variant="legal" />
 
   <div class="article-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href={pillarHref}>{pillarTitle}</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">{title}</span>
+    </nav>
+
     <header class="article-header">
       <div class="eyebrow">{pillarTitle}</div>
       <h1>{title}</h1>
@@ -131,14 +139,6 @@ const updLabel = updatedDate
       <div class="answer-label">Quick Answer</div>
       <p>{answer}</p>
     </div>
-
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Home</a>
-      <span aria-hidden="true">›</span>
-      <a href={pillarHref}>{pillarTitle}</a>
-      <span aria-hidden="true">›</span>
-      <span class="current">{title}</span>
-    </nav>
 
     <article class="article-body">
       <slot />
@@ -218,10 +218,9 @@ const updLabel = updatedDate
 
   .article-header { margin-bottom: 32px; }
 
-  /* Breadcrumb sits in the page body, immediately after the answer-box
-     and before the article body. Styled as a card-like strip so it's
-     clearly visible as part of the page body rather than disappearing
-     into the dark background. */
+  /* Breadcrumb sits at the top of the article, above the green eyebrow.
+     Styled as a visible card-like strip so it reads clearly as part of
+     the page rather than vanishing into the dark background. */
   .article-wrap > .breadcrumb {
     display: flex;
     align-items: center;
@@ -235,7 +234,7 @@ const updLabel = updatedDate
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 14px 20px;
-    margin: -32px 0 32px;
+    margin-bottom: 24px;
   }
   .article-wrap > .breadcrumb a {
     color: var(--muted);

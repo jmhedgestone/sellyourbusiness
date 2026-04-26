@@ -14,10 +14,9 @@
 
 .hub-header { margin-bottom: 32px; }
 
-/* Breadcrumb sits in the page body, immediately after the answer-box
-   and before the next content section. Styled as a card-like strip so
-   it's clearly visible as part of the page body rather than disappearing
-   into the dark background. */
+/* Breadcrumb sits at the top of the hub, above the green eyebrow.
+   Styled as a visible card-like strip so it reads clearly as part of
+   the page rather than vanishing into the dark background. */
 .hub-wrap > .breadcrumb {
   display: flex;
   align-items: center;
@@ -31,7 +30,7 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px 20px;
-  margin: -32px 0 32px;
+  margin-bottom: 24px;
 }
 .hub-wrap > .breadcrumb a {
   color: var(--muted);
