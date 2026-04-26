@@ -117,13 +117,6 @@ const updLabel = updatedDate
 
   <div class="article-wrap">
     <header class="article-header">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span aria-hidden="true">›</span>
-        <a href={pillarHref}>{pillarTitle}</a>
-        <span aria-hidden="true">›</span>
-        <span class="current">{title}</span>
-      </nav>
       <div class="eyebrow">{pillarTitle}</div>
       <h1>{title}</h1>
       <div class="meta">
@@ -138,6 +131,14 @@ const updLabel = updatedDate
       <div class="answer-label">Quick Answer</div>
       <p>{answer}</p>
     </div>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href={pillarHref}>{pillarTitle}</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">{title}</span>
+    </nav>
 
     <article class="article-body">
       <slot />
@@ -209,28 +210,40 @@ const updLabel = updatedDate
   .article-wrap {
     max-width: 760px;
     margin: 0 auto;
-    padding: 128px 24px 80px;
+    padding: 150px 24px 80px;
   }
   @media (max-width: 768px) {
-    .article-wrap { padding-top: 108px; }
+    .article-wrap { padding-top: 130px; }
   }
 
   .article-header { margin-bottom: 32px; }
 
-  .breadcrumb {
+  /* Breadcrumb sits in the page body between the answer-box and the
+     article body — styled like an inline body element, matching the
+     article-body typography (Inter, muted, in-flow) rather than as
+     navigation chrome at the top of the page. */
+  .article-wrap > .breadcrumb {
     display: flex;
     align-items: center;
     gap: 6px;
     flex-wrap: wrap;
-    font-size: 0.78rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
     color: var(--muted);
-    margin-bottom: 18px;
-    opacity: 0.75;
+    padding: 14px 0;
+    margin-bottom: 8px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
-  .breadcrumb a { color: var(--muted); transition: color 0.15s; }
-  .breadcrumb a:hover { color: var(--gold); opacity: 1; }
-  .breadcrumb span[aria-hidden] { color: var(--border); }
-  .breadcrumb .current { color: var(--text); }
+  .article-wrap > .breadcrumb a {
+    color: var(--muted);
+    transition: color 0.15s;
+    border-bottom: none;
+  }
+  .article-wrap > .breadcrumb a:hover { color: var(--gold); }
+  .article-wrap > .breadcrumb span[aria-hidden] { color: var(--border); }
+  .article-wrap > .breadcrumb .current { color: var(--text); }
   .article-header .eyebrow {
     font-size: 0.75rem;
     font-weight: 700;
