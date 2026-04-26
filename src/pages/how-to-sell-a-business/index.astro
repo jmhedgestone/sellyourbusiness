@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
 import ScrollDepth from '../../components/ScrollDepth.astro';
 import '../../styles/hub.css';
 
@@ -238,6 +239,8 @@ const stepMap: Record<string, { step: number; label: string }> = {
         </details>
       </div>
     </section>
+
+    <EmailCapture source="hub-how-to-sell-a-business" contextTitle="How to Sell a Business" />
 
     <section class="hub-author">
       <img src="/assets/john-matsis.jpg" alt="John Matsis" />

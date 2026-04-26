@@ -1,0 +1,213 @@
+---
+// Inline newsletter capture for articles and hub pages.
+// - Posts to /api/subscribe (Resend Audience + notification email)
+// - Reads UTMs from localStorage so attribution flows to the email list
+// - Fires a Meta Pixel custom 'Subscribe' event for retargeting
+//
+// Designed to live at the bottom of long-form content where reader intent
+// is high but they're not yet ready for the full lead form.
+
+export interface Props {
+  source?: string;       // logical placement, e.g. 'spoke-article' | 'hub-page'
+  contextTitle?: string; // article/hub title for the notification email
+}
+
+const { source = 'content-page', contextTitle = '' } = Astro.props;
+---
+
+<aside class="email-capture" data-source={source} data-context={contextTitle}>
+  <div class="ec-eyebrow">The Selling Your Business Newsletter</div>
+  <h3 class="ec-headline">One email a week. Practical tips from a working broker.</h3>
+  <p class="ec-sub">
+    Real numbers, real deals, no fluff — what actually moves valuations and what
+    kills offers. Free. Unsubscribe anytime.
+  </p>
+
+  <form class="ec-form" id={`emailCaptureForm-${source}`} novalidate>
+    <input
+      type="text"
+      name="firstName"
+      class="ec-input ec-input-name"
+      placeholder="First name (optional)"
+      autocomplete="given-name"
+    />
+    <input
+      type="email"
+      name="email"
+      class="ec-input ec-input-email"
+      placeholder="Your email"
+      autocomplete="email"
+      required
+    />
+    <button type="submit" class="ec-submit">Subscribe →</button>
+  </form>
+  <div class="ec-status" role="status" aria-live="polite"></div>
+</aside>
+
+<script>
+  (function () {
+    function readUtms() {
+      try {
+        var last = JSON.parse(localStorage.getItem('syb_utm_last') || '{}');
+        var first = JSON.parse(localStorage.getItem('syb_utm_first') || '{}');
+        var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','fbclid','gclid'];
+        var out: Record<string, string> = {};
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i];
+          if (first[k]) out[k] = first[k];
+          else if (last[k]) out[k] = last[k];
+        }
+        return out;
+      } catch (_) { return {}; }
+    }
+
+    document.querySelectorAll<HTMLFormElement>('form[id^="emailCaptureForm-"]').forEach(function (form) {
+      var aside = form.closest('.email-capture') as HTMLElement | null;
+      var statusEl = aside ? aside.querySelector('.ec-status') as HTMLElement : null;
+      var btn = form.querySelector('.ec-submit') as HTMLButtonElement | null;
+      var emailInput = form.querySelector('input[name="email"]') as HTMLInputElement;
+      var nameInput = form.querySelector('input[name="firstName"]') as HTMLInputElement;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (!emailInput || !btn || !aside) return;
+
+        var email = emailInput.value.trim();
+        var firstName = nameInput ? nameInput.value.trim() : '';
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (statusEl) {
+            statusEl.textContent = 'Please enter a valid email address.';
+            statusEl.className = 'ec-status ec-status-error';
+          }
+          return;
+        }
+
+        btn.disabled = true;
+        var origLabel = btn.textContent;
+        btn.textContent = 'Subscribing…';
+
+        try {
+          var res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: email,
+              firstName: firstName,
+              source: aside.dataset.source || 'content-page',
+              context: aside.dataset.context || '',
+              utms: readUtms(),
+            }),
+          });
+          var json = await res.json().catch(function () { return {}; });
+          if (!res.ok) throw new Error(json.error || 'Subscribe failed');
+
+          // Pixel: fire a custom 'Subscribe' so we can build a retargeting
+          // audience of newsletter subscribers separately from form leads.
+          if (typeof (window as any).fbq === 'function') {
+            (window as any).fbq('trackCustom', 'Subscribe', {
+              content_name: 'Newsletter Subscribe',
+              source: aside.dataset.source || 'content-page',
+              value: 25,
+              currency: 'USD',
+            });
+          }
+
+          form.style.display = 'none';
+          if (statusEl) {
+            statusEl.innerHTML = "<strong>You're in.</strong> Check your inbox for confirmation — first issue lands next Tuesday.";
+            statusEl.className = 'ec-status ec-status-success';
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.textContent = 'Something went wrong. Please try again or email john.matsis@hedgestone.com.';
+            statusEl.className = 'ec-status ec-status-error';
+          }
+          btn.disabled = false;
+          btn.textContent = origLabel || 'Subscribe →';
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .email-capture {
+    margin-top: 64px;
+    padding: 36px 32px;
+    background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
+    border: 1px solid rgba(45,184,127,0.25);
+    border-radius: 16px;
+  }
+  .ec-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .ec-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  .ec-sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 20px;
+    max-width: 540px;
+  }
+  .ec-form {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr auto;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .ec-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .ec-input::placeholder { color: var(--muted); }
+  .ec-input:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  .ec-submit {
+    background: var(--gold);
+    color: #0d1117;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .ec-submit:hover:not(:disabled) { background: var(--gold-light); }
+  .ec-submit:disabled { opacity: 0.6; cursor: wait; }
+  .ec-status {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .ec-status:empty { display: none; }
+  .ec-status-error { color: var(--red); }
+  .ec-status-success { color: var(--text); }
+  .ec-status-success strong { color: var(--gold); }
+
+  @media (max-width: 640px) {
+    .email-capture { padding: 28px 22px; }
+    .ec-form { grid-template-columns: 1fr; }
+  }
+</style>

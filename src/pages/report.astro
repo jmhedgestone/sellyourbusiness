@@ -270,6 +270,30 @@ const description =
     }
 
     loadReport();
+
+    // Fire Meta Pixel CompleteRegistration when the user reaches the report
+    // page. This is a stronger signal than Lead alone — it confirms they
+    // completed the form AND received their valuation. Use a higher value so
+    // Meta's algorithm prefers users who reach this stage. Browser-only is
+    // sufficient: the CAPI Lead from /api/submit already covered iOS users.
+    try {
+      const raw = localStorage.getItem('valuationData');
+      if (raw && typeof fbq === 'function') {
+        const d = JSON.parse(raw);
+        // Generate a fresh eventId for CompleteRegistration so it's distinct
+        // from the Lead event in Meta's deduplication logic.
+        const regId = (window.crypto && window.crypto.randomUUID)
+          ? window.crypto.randomUUID()
+          : 'reg-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+        fbq('track', 'CompleteRegistration', {
+          content_name: 'Valuation Report Viewed',
+          content_category: d.industry || 'unspecified',
+          value: 250,
+          currency: 'USD',
+          status: 'completed',
+        }, { eventID: regId });
+      }
+    } catch (_) { /* non-fatal */ }
   </script>
 </BaseLayout>
 

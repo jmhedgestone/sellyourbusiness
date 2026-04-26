@@ -82,7 +82,7 @@ async function sendCapiLead(req, d) {
         content_name: 'Business Valuation Request',
         content_category: d.industry || 'unspecified',
         currency: 'USD',
-        value: 0,
+        value: 100,
       },
       // UTM + click-id attribution forwarded from the browser. Meta accepts
       // arbitrary keys in custom_data and surfaces them in Events Manager.
