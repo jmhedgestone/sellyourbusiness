@@ -116,15 +116,14 @@ const updLabel = updatedDate
   <Nav variant="legal" />
 
   <div class="article-wrap">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Home</a>
-      <span>›</span>
-      <a href={pillarHref}>{pillarTitle}</a>
-      <span>›</span>
-      <span class="current">{title}</span>
-    </nav>
-
     <header class="article-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">›</span>
+        <a href={pillarHref}>{pillarTitle}</a>
+        <span aria-hidden="true">›</span>
+        <span class="current">{title}</span>
+      </nav>
       <div class="eyebrow">{pillarTitle}</div>
       <h1>{title}</h1>
       <div class="meta">
@@ -210,26 +209,28 @@ const updLabel = updatedDate
   .article-wrap {
     max-width: 760px;
     margin: 0 auto;
-    padding: 150px 24px 80px;
+    padding: 128px 24px 80px;
   }
   @media (max-width: 768px) {
-    .article-wrap { padding-top: 130px; }
+    .article-wrap { padding-top: 108px; }
   }
+
+  .article-header { margin-bottom: 32px; }
 
   .breadcrumb {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     color: var(--muted);
-    margin-bottom: 32px;
+    margin-bottom: 18px;
+    opacity: 0.75;
   }
-  .breadcrumb a { color: var(--muted); }
-  .breadcrumb a:hover { color: var(--gold); }
+  .breadcrumb a { color: var(--muted); transition: color 0.15s; }
+  .breadcrumb a:hover { color: var(--gold); opacity: 1; }
+  .breadcrumb span[aria-hidden] { color: var(--border); }
   .breadcrumb .current { color: var(--text); }
-
-  .article-header { margin-bottom: 32px; }
   .article-header .eyebrow {
     font-size: 0.75rem;
     font-weight: 700;
