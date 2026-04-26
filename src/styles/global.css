@@ -41,8 +41,11 @@ a:hover { color: var(--gold-light); }
   padding: 0 24px;
 }
 
-/* NAV */
-nav {
+/* NAV — only target the top-level site nav (direct child of body). Plain
+   `nav { position: fixed }` would also catch nested <nav> elements like
+   breadcrumbs and pin them to the top of the viewport, which was the
+   root cause of breadcrumbs appearing above the HedgeStone logo. */
+body > nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
