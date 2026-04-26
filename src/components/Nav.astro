@@ -24,7 +24,9 @@ const isHome = variant === 'home';
       </a>
     )}
 
-    {isHome && <a href="/funnel" class="nav-cta">Get My Free Valuation &rarr;</a>}
+    {(isHome || variant === 'legal') && (
+      <a href="/funnel" class="nav-cta">Start My Free Valuation &rarr;</a>
+    )}
     {variant === 'funnel' && (
       <div style="font-size:0.85rem;color:var(--muted);">Free &amp; Confidential Valuation</div>
     )}
