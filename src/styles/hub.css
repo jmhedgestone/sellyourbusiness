@@ -48,6 +48,30 @@
   max-width: 680px;
 }
 
+/* Quick Answer box. Same component used in spoke articles via ArticleLayout —
+   defined here too so the pillar hub pages render an identical green-bordered
+   block instead of a plain unstyled paragraph. */
+.answer-box {
+  background: rgba(45,184,127,0.06);
+  border: 1px solid rgba(45,184,127,0.25);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 32px 0 48px;
+}
+.answer-box .answer-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.answer-box p {
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
 .hub-intro { margin-top: 56px; }
 .hub-intro h2 {
   font-size: 1.5rem;
