@@ -362,7 +362,7 @@ const description =
       return parseFloat(val.replace(/[^0-9.]/g, '')) || 0;
     }
 
-    const FORMSPREE_ENDPOINT = '/api/submit';
+    const SUBMIT_ENDPOINT = '/api/submit';
 
     // ─── UTM-aware copy swap ────────────────────────────────────────────────
     // Reads first-touch UTMs from localStorage (captured on landing) and the
@@ -503,7 +503,7 @@ const description =
 
       try {
         const turnstileEl = document.querySelector('[name="cf-turnstile-response"]');
-        const res = await fetch(FORMSPREE_ENDPOINT, {
+        const res = await fetch(SUBMIT_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
@@ -512,12 +512,12 @@ const description =
           })
         });
         const json = await res.json();
-        console.log('Formspree response:', res.status, json);
+        console.log('Submit response:', res.status, json);
         if (!res.ok) {
-          console.error('Formspree error:', json);
+          console.error('Submit error:', json);
         }
       } catch (err) {
-        console.error('Formspree fetch failed:', err);
+        console.error('Submit fetch failed:', err);
       }
 
       // Meta Pixel: Lead event. Sent with the same eventID as the server-side
