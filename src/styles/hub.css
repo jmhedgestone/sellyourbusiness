@@ -14,30 +14,33 @@
 
 .hub-header { margin-bottom: 32px; }
 
-/* Breadcrumb sits in the page body between the answer-box and the hub
-   sections — styled like an inline body element with subtle top/bottom
-   borders, matching the article body typography rather than nav chrome. */
+/* Breadcrumb sits in the page body, immediately after the answer-box
+   and before the next content section. Styled as a card-like strip so
+   it's clearly visible as part of the page body rather than disappearing
+   into the dark background. */
 .hub-wrap > .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
   font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: var(--muted);
-  padding: 14px 0;
-  margin-bottom: 8px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin: -32px 0 32px;
 }
 .hub-wrap > .breadcrumb a {
   color: var(--muted);
   transition: color 0.15s;
+  font-weight: 500;
 }
 .hub-wrap > .breadcrumb a:hover { color: var(--gold); }
-.hub-wrap > .breadcrumb span[aria-hidden] { color: var(--border); }
-.hub-wrap > .breadcrumb .current { color: var(--text); }
+.hub-wrap > .breadcrumb span[aria-hidden] { color: var(--gold); font-weight: 700; }
+.hub-wrap > .breadcrumb .current { color: var(--text); font-weight: 600; }
 .hub-header .eyebrow {
   font-size: 0.75rem;
   font-weight: 700;

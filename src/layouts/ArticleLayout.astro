@@ -218,32 +218,34 @@ const updLabel = updatedDate
 
   .article-header { margin-bottom: 32px; }
 
-  /* Breadcrumb sits in the page body between the answer-box and the
-     article body — styled like an inline body element, matching the
-     article-body typography (Inter, muted, in-flow) rather than as
-     navigation chrome at the top of the page. */
+  /* Breadcrumb sits in the page body, immediately after the answer-box
+     and before the article body. Styled as a card-like strip so it's
+     clearly visible as part of the page body rather than disappearing
+     into the dark background. */
   .article-wrap > .breadcrumb {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
     font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.5;
     color: var(--muted);
-    padding: 14px 0;
-    margin-bottom: 8px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: -32px 0 32px;
   }
   .article-wrap > .breadcrumb a {
     color: var(--muted);
     transition: color 0.15s;
     border-bottom: none;
+    font-weight: 500;
   }
   .article-wrap > .breadcrumb a:hover { color: var(--gold); }
-  .article-wrap > .breadcrumb span[aria-hidden] { color: var(--border); }
-  .article-wrap > .breadcrumb .current { color: var(--text); }
+  .article-wrap > .breadcrumb span[aria-hidden] { color: var(--gold); font-weight: 700; }
+  .article-wrap > .breadcrumb .current { color: var(--text); font-weight: 600; }
   .article-header .eyebrow {
     font-size: 0.75rem;
     font-weight: 700;
