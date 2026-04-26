@@ -20,10 +20,37 @@ Two options:
    - Schedule it for the appropriate Tuesday (week 1, week 2, etc.)
 4. Repeat for all 10.
 
-### Option B: API-driven (better long-term, requires a small script)
-Resend's [broadcasts API](https://resend.com/docs/api-reference/broadcasts/create-broadcast) supports `scheduled_at`. A simple Node script can read all 10 HTML files, post them to Resend with weekly offsets, and you're done in one shot.
+### Option B: API-driven (recommended) — `scripts/schedule-nurture-sequence.mjs`
 
-If you want this, ask and I'll build it.
+A Node script that reads all 10 HTML files, parses metadata, creates each as a Resend Broadcast, and schedules them at weekly offsets — one shot.
+
+**Setup once:**
+```bash
+export RESEND_API_KEY=re_xxxxxxxxxxxx           # https://resend.com/api-keys
+export RESEND_AUDIENCE_ID=<your-audience-uuid>   # https://resend.com/audiences
+```
+
+**Dry run (always do this first — prints the schedule, doesn't touch Resend):**
+```bash
+node scripts/schedule-nurture-sequence.mjs
+```
+
+**Actually create + schedule them:**
+```bash
+node scripts/schedule-nurture-sequence.mjs --confirm
+```
+
+**Override the start date (default: next Tuesday at 9am ET):**
+```bash
+node scripts/schedule-nurture-sequence.mjs --confirm --start 2026-05-12
+```
+
+The script prints a per-week status as it goes and exits non-zero if anything failed. View results at https://resend.com/broadcasts — each broadcast lands as `Nurture Week N: …` so they're easy to find.
+
+**Optional env tweaks:**
+- `RESEND_FROM` — sender (default: `John Matsis <john@sellyourbusiness.com>`)
+- `RESEND_REPLY_TO` — replies route here (default: `john.matsis@hedgestone.com`)
+- `RESEND_SEND_HOUR_ET` — local hour to send each Tuesday in 24h (default: `9`)
 
 ## Cadence note
 
