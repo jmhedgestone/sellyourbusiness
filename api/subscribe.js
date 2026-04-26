@@ -6,7 +6,7 @@
 //   newsletter form is lower-friction than the full lead form, so we accept
 //   submissions without Turnstile but log them as "unverified")
 
-const { Resend } = require('resend');
+import { Resend } from 'resend';
 
 function isEmail(value) {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -27,7 +27,7 @@ async function verifyTurnstile(token) {
   }
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -101,4 +101,4 @@ module.exports = async function handler(req, res) {
   }
 
   return res.status(200).json({ ok: true });
-};
+}

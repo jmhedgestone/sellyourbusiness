@@ -1,5 +1,5 @@
-const { Resend } = require('resend');
-const crypto = require('crypto');
+import { Resend } from 'resend';
+import crypto from 'node:crypto';
 
 const YEARS_LABEL = {
   under1: 'Under 1 year',
@@ -109,7 +109,7 @@ async function sendCapiLead(req, d) {
   }
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -256,4 +256,4 @@ module.exports = async function handler(req, res) {
   }
 
   return res.status(200).json({ ok: true });
-};
+}
