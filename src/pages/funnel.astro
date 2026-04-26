@@ -15,10 +15,10 @@ const description =
   <Nav variant="funnel" />
 
   <div class="funnel-wrap">
-    <div class="funnel-header">
-      <div class="section-label">Step-by-Step</div>
-      <h1>What Is Your Business Worth?</h1>
-      <p>Answer a few quick questions and get your personalized valuation report — no obligation, 100% confidential.</p>
+    <div class="funnel-header" id="funnelHeader">
+      <div class="section-label" id="funnelEyebrow">Step-by-Step</div>
+      <h1 id="funnelHeadline">What Is Your Business Worth?</h1>
+      <p id="funnelSubhead">Answer a few quick questions and get your personalized valuation report — no obligation, 100% confidential.</p>
     </div>
 
     <!-- PROGRESS BAR -->
@@ -364,6 +364,81 @@ const description =
 
     const FORMSPREE_ENDPOINT = '/api/submit';
 
+    // ─── UTM-aware copy swap ────────────────────────────────────────────────
+    // Reads first-touch UTMs from localStorage (captured on landing) and the
+    // current URL, then swaps the headline / subhead / eyebrow to match the
+    // campaign that brought them here. Falls back to the static defaults
+    // baked into the HTML when no UTMs are present.
+    //
+    // To add a new variant: append to the COPY_VARIANTS map. Match keys can
+    // be utm_source ('instagram'), utm_medium ('paid-social'), or
+    // utm_campaign ('retargeting-q2'). First match wins, in order.
+    (function applyUtmAwareCopy() {
+      const COPY_VARIANTS = [
+        // Instagram traffic — short, conversational, brand-led.
+        { match: { utm_source: 'instagram' }, eyebrow: 'From Instagram',
+          headline: 'Your Business — What\'s It Actually Worth?',
+          subhead: 'You saw the post. Now get the number. 3 minutes, free, confidential.' },
+        // Facebook prospecting — broader, value-focused.
+        { match: { utm_source: 'facebook' }, eyebrow: 'Free Valuation',
+          headline: 'Find Out What Your Business Could Sell For',
+          subhead: 'Real multiples, applied to your numbers, by a working broker. 3 minutes, no obligation.' },
+        // Google search — high-intent, direct.
+        { match: { utm_source: 'google' }, eyebrow: 'Confidential Estimate',
+          headline: 'Get Your Business Valuation — Free',
+          subhead: 'Industry-specific multiples applied to your financials. Takes 3 minutes. 100% confidential.' },
+        // Retargeting — addressing hesitation.
+        { match: { utm_campaign: 'retargeting' }, eyebrow: 'Picking Up Where You Left Off',
+          headline: 'Still Curious What Your Business Is Worth?',
+          subhead: 'Same 3-minute form, same confidential estimate. No spam, no sales pressure.' },
+        // YouTube / Reels content — trust-led.
+        { match: { utm_source: 'youtube' }, eyebrow: 'From the Video',
+          headline: 'Get Your Specific Number',
+          subhead: 'Apply the same method John walked through to your actual financials. 3 minutes.' },
+        { match: { utm_medium: 'reels' }, eyebrow: 'From the Reel',
+          headline: 'Get Your Specific Number',
+          subhead: 'Apply the same method to your actual financials. 3 minutes, free, confidential.' },
+      ];
+
+      function getUtmContext() {
+        const ctx = {};
+        try {
+          const last = JSON.parse(localStorage.getItem('syb_utm_last') || '{}');
+          const first = JSON.parse(localStorage.getItem('syb_utm_first') || '{}');
+          ['utm_source','utm_medium','utm_campaign'].forEach((k) => {
+            ctx[k] = (last[k] || first[k] || '').toLowerCase();
+          });
+        } catch (_) {}
+        // Current URL wins over storage if present
+        try {
+          const params = new URLSearchParams(window.location.search);
+          ['utm_source','utm_medium','utm_campaign'].forEach((k) => {
+            const v = params.get(k);
+            if (v) ctx[k] = v.toLowerCase();
+          });
+        } catch (_) {}
+        return ctx;
+      }
+
+      const ctx = getUtmContext();
+      if (!ctx.utm_source && !ctx.utm_medium && !ctx.utm_campaign) return;
+
+      const variant = COPY_VARIANTS.find((v) =>
+        Object.entries(v.match).every(([k, val]) =>
+          (ctx[k] || '').indexOf(String(val).toLowerCase()) !== -1
+        )
+      );
+      if (!variant) return;
+
+      const eyebrow = document.getElementById('funnelEyebrow');
+      const headline = document.getElementById('funnelHeadline');
+      const subhead = document.getElementById('funnelSubhead');
+      if (eyebrow && variant.eyebrow) eyebrow.textContent = variant.eyebrow;
+      if (headline && variant.headline) headline.textContent = variant.headline;
+      if (subhead && variant.subhead) subhead.textContent = variant.subhead;
+    })();
+    // ────────────────────────────────────────────────────────────────────────
+
     // Meta Pixel: ViewContent fires once when the user reaches the funnel.
     // Useful for retargeting and lookalike audiences.
     if (typeof fbq === 'function') {
@@ -449,10 +524,13 @@ const description =
       // CAPI event for deduplication. UTMs flow into custom_data so we can
       // attribute leads to specific ad sets in Events Manager.
       if (typeof fbq === 'function') {
+        // Lead value of 100 gives Meta's algorithm a non-zero signal to
+        // optimize toward valuable users. Real EV is much higher, but the
+        // optimizer cares about relative ranking, not absolute dollars.
         fbq('track', 'Lead', Object.assign({
           content_name: 'Business Valuation Request',
           content_category: data.industry || 'unspecified',
-          value: 0,
+          value: 100,
           currency: 'USD',
         }, utms), { eventID: eventId });
       }
