@@ -134,8 +134,8 @@ const { source = 'content-page', contextTitle = '' } = Astro.props;
   .email-capture {
     margin-top: 64px;
     padding: 36px 32px;
-    background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
-    border: 1px solid rgba(45,184,127,0.25);
+    background: linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(212,168,67,0.02) 100%);
+    border: 1px solid rgba(212,168,67,0.25);
     border-radius: 16px;
   }
   .ec-eyebrow {
@@ -182,7 +182,7 @@ const { source = 'content-page', contextTitle = '' } = Astro.props;
     border-color: var(--gold);
   }
   .ec-submit {
-    background: var(--gold);
+    background: var(--gold-gradient);
     color: #0d1117;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -191,10 +191,14 @@ const { source = 'content-page', contextTitle = '' } = Astro.props;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, box-shadow 0.15s;
     white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(168,124,31,0.25);
   }
-  .ec-submit:hover:not(:disabled) { background: var(--gold-light); }
+  .ec-submit:hover:not(:disabled) {
+    background: var(--gold-gradient-hover);
+    box-shadow: 0 6px 18px rgba(212,168,67,0.4);
+  }
   .ec-submit:disabled { opacity: 0.6; cursor: wait; }
   .ec-status {
     margin-top: 14px;

@@ -7,11 +7,16 @@
   --surface:   #161b22;
   --card:      #21262d;
   --border:    #30363d;
-  --gold:      #2db87f;
-  --gold-light:#4dd9a0;
-  --gold-dim:  #1a8f5e;
-  --green:     #2db87f;
-  --green-dim: rgba(45,184,127,0.12);
+  --gold:      #d4a843;
+  --gold-light:#e8c46a;
+  --gold-dim:  #a87c1f;
+  --gold-deep: #8a6314;
+  --green:     #d4a843; /* legacy alias — kept so old refs still work */
+  --green-dim: rgba(212,168,67,0.12);
+  /* Primary CTA gradient — light top-left → deep bottom-right.
+     Use on .nav-cta, .btn-primary, and any inline action button. */
+  --gold-gradient:       linear-gradient(135deg, #e8c46a 0%, #d4a843 50%, #a87c1f 100%);
+  --gold-gradient-hover: linear-gradient(135deg, #efd180 0%, #e8c46a 50%, #c9952f 100%);
   --text:      #e6edf3;
   --muted:     #8b949e;
   --red:       #f85149;
@@ -63,16 +68,21 @@ body > nav {
 }
 .nav-logo img { height: 72px; }
 .nav-cta {
-  background: var(--gold);
+  background: var(--gold-gradient);
   color: #0d1117;
   font-weight: 600;
   font-size: 0.9rem;
   padding: 10px 22px;
   border-radius: 6px;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
   white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(168,124,31,0.25);
 }
-.nav-cta:hover { background: var(--gold-light); color: #0d1117; }
+.nav-cta:hover {
+  background: var(--gold-gradient-hover);
+  color: #0d1117;
+  box-shadow: 0 4px 14px rgba(212,168,67,0.35);
+}
 
 /* BUTTONS */
 .btn {
@@ -90,14 +100,15 @@ body > nav {
   text-decoration: none;
 }
 .btn-primary {
-  background: var(--gold);
+  background: var(--gold-gradient);
   color: #0d1117;
+  box-shadow: 0 2px 6px rgba(168,124,31,0.25);
 }
 .btn-primary:hover {
-  background: var(--gold-light);
+  background: var(--gold-gradient-hover);
   color: #0d1117;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(45,184,127,0.3);
+  box-shadow: 0 10px 28px rgba(212,168,67,0.4);
 }
 .btn-outline {
   background: transparent;
@@ -105,8 +116,9 @@ body > nav {
   border: 2px solid var(--gold);
 }
 .btn-outline:hover {
-  background: var(--gold);
+  background: var(--gold-gradient);
   color: #0d1117;
+  border-color: transparent;
 }
 .btn-lg { font-size: 1.1rem; padding: 16px 40px; }
 
@@ -206,7 +218,7 @@ footer {
 .step-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0,0,0,0.3);
-  border-color: rgba(45,184,127,0.35);
+  border-color: rgba(212,168,67,0.35);
 }
 
 /* Stat card hover */
@@ -215,14 +227,14 @@ footer {
 }
 .hedg-stat:hover {
   transform: translateY(-3px);
-  border-color: rgba(45,184,127,0.4);
+  border-color: rgba(212,168,67,0.4);
 }
 
 /* Button pulse on hero */
 @keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(45,184,127,0.4); }
-  70%  { box-shadow: 0 0 0 12px rgba(45,184,127,0); }
-  100% { box-shadow: 0 0 0 0 rgba(45,184,127,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(212,168,67,0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(212,168,67,0); }
+  100% { box-shadow: 0 0 0 0 rgba(212,168,67,0); }
 }
 .btn-pulse { animation: pulse-ring 2.4s ease infinite; }
 
