@@ -11,9 +11,19 @@ const title = 'How to Sell a Business: The Complete Guide (2026)';
 const description =
   'Step-by-step guide to selling a small or mid-market business — from preparation and valuation through confidential marketing, LOI, due diligence, and closing. Written by John Matsis, business broker and principal at HedgeStone Business Advisors.';
 
+// Step order map — also drives the display sort below so the hub renders
+// step 1 → 5, not reverse-chronological by publish date.
+const stepOrder: Record<string, number> = {
+  'when-to-sell-a-business': 1,
+  'how-to-prepare-your-business-for-sale': 2,
+  'how-long-does-it-take-to-sell-a-business': 3,
+  'business-broker-vs-selling-yourself': 4,
+  'letter-of-intent-business-sale': 5,
+};
+
 const articles = (
   await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'how-to-sell')
-).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
 
 const pageUrl = 'https://sellyourbusiness.com/how-to-sell-a-business';
 
