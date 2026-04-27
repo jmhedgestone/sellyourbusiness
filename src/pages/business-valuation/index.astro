@@ -11,9 +11,19 @@ const title = 'Business Valuation: A Practical Guide for Sellers (2026)';
 const description =
   'How small- and mid-market businesses are actually valued — SDE multiples, EBITDA, add-backs, industry benchmarks, and the levers that move your number. Written by John Matsis, business broker and principal at HedgeStone Business Advisors.';
 
+// Step order map — also drives the display sort below so the hub renders
+// step 1 → 5, not reverse-chronological by publish date.
+const stepOrder = {
+  'what-is-sde-sellers-discretionary-earnings': 1,
+  'business-valuation-multiples-by-industry': 2,
+  'ebitda-vs-sde-business-valuation': 3,
+  'add-backs-business-valuation': 4,
+  'how-to-increase-business-valuation-before-selling': 5,
+};
+
 const articles = (
   await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'valuation')
-).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
 
 const pageUrl = 'https://sellyourbusiness.com/business-valuation';
 
