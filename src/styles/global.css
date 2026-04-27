@@ -230,13 +230,54 @@ footer {
   border-color: rgba(212,168,67,0.4);
 }
 
-/* Button pulse on hero */
+/* Hero CTA pulse — two concentric rings offset 50% for a continuous
+   wave effect, plus an animated border-color sheen on the button itself
+   so the CTA reads as alive even when the rings are at their dim phase. */
 @keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(212,168,67,0.4); }
-  70%  { box-shadow: 0 0 0 12px rgba(212,168,67,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(212,168,67,0.75); }
+  70%  { box-shadow: 0 0 0 24px rgba(212,168,67,0); }
   100% { box-shadow: 0 0 0 0 rgba(212,168,67,0); }
 }
-.btn-pulse { animation: pulse-ring 2.4s ease infinite; }
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 2px 6px rgba(168,124,31,0.25),
+      0 0 0 0 rgba(232,196,106,0.55);
+  }
+  50% {
+    box-shadow:
+      0 8px 28px rgba(212,168,67,0.55),
+      0 0 0 3px rgba(232,196,106,0.35);
+  }
+}
+.btn-pulse {
+  position: relative;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+.btn-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: pulse-ring 2s ease-out infinite;
+}
+.btn-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: pulse-ring 2s ease-out infinite;
+  animation-delay: 1s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-pulse,
+  .btn-pulse::before,
+  .btn-pulse::after {
+    animation: none;
+  }
+}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
