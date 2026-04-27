@@ -624,25 +624,241 @@ const description =
     .confidence-label, .confidence-bar { width: 240px; }
   }
 
+  /* ─── PRINT / "Save as PDF" — single-page light-themed report ──────────
+     Goal: when the user clicks Save / Print, they get a clean one-page
+     US Letter PDF that reads like a professional valuation document
+     instead of the dark screen UI broken across 2-3 pages.
+     We override colors to a print-friendly light palette, force the
+     browser to render backgrounds (so the gold accents show), and
+     tighten every section's spacing so the whole report fits on one
+     page at ~0.4 inch margins. */
+
+  @page {
+    size: letter;
+    margin: 0.45in 0.5in;
+  }
+
   @media print {
-    nav, .report-footer .actions { display: none !important; }
-    body { background: white; }
-    .report-card {
-      border: none;
-      background: white;
+    /* Force backgrounds + colors to render in print (Chrome/Safari/Edge). */
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
-    .report-header, .valuation-hero, .breakdown-section,
-    .method-section, .broker-section {
-      background: white !important;
-    }
+
+    /* Light theme overrides — applied only at print time. */
     :root {
-      --bg: white;
-      --surface: white;
-      --card: #f8f8f8;
-      --text: #111;
-      --muted: #555;
-      --border: #ddd;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --card: #f7f5ee;
+      --text: #1a1a1a;
+      --muted: #4a4a4a;
+      --border: #d8d2c0;
       --gold: #a87c1f;
+      --gold-light: #d4a843;
     }
+
+    body { background: #ffffff !important; color: #1a1a1a !important; }
+
+    /* Hide site chrome and on-screen action buttons. */
+    nav,
+    body > nav,
+    .report-footer .actions,
+    .report-footer p { display: none !important; }
+
+    /* Reset wrapper spacing — no top padding for fixed nav since it's hidden. */
+    .report-wrap {
+      padding: 0 !important;
+      margin: 0 auto !important;
+      max-width: 100% !important;
+    }
+
+    .report-card {
+      border: 1px solid var(--border) !important;
+      background: #ffffff !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+      page-break-inside: avoid;
+    }
+
+    /* HEADER — compact, light, with gold underline. */
+    .report-header {
+      background: #ffffff !important;
+      border-bottom: 2px solid var(--gold) !important;
+      padding: 18px 22px !important;
+      gap: 16px !important;
+    }
+    .report-hedgstone-logo {
+      height: 28px !important;
+      margin-bottom: 10px !important;
+      filter: brightness(0) saturate(100%) invert(15%) !important; /* dark logo */
+    }
+    .report-title {
+      font-size: 0.68rem !important;
+      color: var(--gold) !important;
+      margin-bottom: 4px !important;
+    }
+    .report-business-name {
+      font-size: 1.5rem !important;
+      color: #1a1a1a !important;
+      margin-bottom: 4px !important;
+      line-height: 1.15 !important;
+    }
+    .report-industry {
+      font-size: 0.82rem !important;
+      color: #4a4a4a !important;
+    }
+    .report-biz-logo, .report-biz-initials {
+      width: 56px !important;
+      height: 56px !important;
+      border: 1px solid var(--border) !important;
+    }
+
+    /* VALUATION HERO — the centerpiece. */
+    .valuation-hero {
+      background: linear-gradient(135deg, #faf6e9 0%, #f1ebd7 100%) !important;
+      padding: 22px 22px 18px !important;
+      border-bottom: 1px solid var(--border) !important;
+      page-break-inside: avoid;
+    }
+    .valuation-label {
+      color: var(--gold) !important;
+      font-size: 0.68rem !important;
+      margin-bottom: 6px !important;
+    }
+    .valuation-range {
+      font-size: 2.4rem !important;
+      color: #1a1a1a !important;
+      line-height: 1 !important;
+      margin-bottom: 8px !important;
+    }
+    .valuation-note {
+      font-size: 0.85rem !important;
+      color: #4a4a4a !important;
+      margin-bottom: 14px !important;
+    }
+    .confidence-bar { background: rgba(0,0,0,0.08) !important; height: 6px !important; }
+    .confidence-fill {
+      background: linear-gradient(90deg, var(--gold-light), var(--gold)) !important;
+    }
+    .confidence-label { font-size: 0.68rem !important; color: #6a6a6a !important; }
+
+    /* FINANCIAL SNAPSHOT — three compact tiles. */
+    .breakdown-section {
+      background: #ffffff !important;
+      padding: 16px 22px !important;
+      border-bottom: 1px solid var(--border) !important;
+      page-break-inside: avoid;
+    }
+    .breakdown-title {
+      font-size: 0.68rem !important;
+      color: var(--gold) !important;
+      margin-bottom: 10px !important;
+    }
+    .breakdown-grid { gap: 12px !important; }
+    .breakdown-item {
+      background: var(--card) !important;
+      border: 1px solid var(--border) !important;
+      padding: 10px 14px !important;
+      border-radius: 6px !important;
+    }
+    .b-label { font-size: 0.66rem !important; color: #6a6a6a !important; margin-bottom: 2px !important; }
+    .b-value { font-size: 1.15rem !important; color: #1a1a1a !important; line-height: 1.1 !important; }
+    .b-sub { font-size: 0.66rem !important; color: #888 !important; margin-top: 1px !important; }
+
+    /* METHODOLOGY — paragraph + table. */
+    .method-section {
+      background: #ffffff !important;
+      padding: 14px 22px !important;
+      border-bottom: 1px solid var(--border) !important;
+      page-break-inside: avoid;
+    }
+    .method-title {
+      font-size: 0.68rem !important;
+      color: var(--gold) !important;
+      margin-bottom: 8px !important;
+    }
+    .method-text {
+      font-size: 0.78rem !important;
+      color: #3a3a3a !important;
+      line-height: 1.45 !important;
+      margin-bottom: 10px !important;
+    }
+    .method-table {
+      font-size: 0.78rem !important;
+    }
+    .method-table th {
+      background: #f3eee0 !important;
+      color: var(--gold) !important;
+      font-size: 0.66rem !important;
+      padding: 6px 10px !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+    .method-table td {
+      padding: 6px 10px !important;
+      color: #2a2a2a !important;
+      border-bottom: 1px solid #ece6d4 !important;
+    }
+    .method-table tr:last-child td { border-bottom: none !important; }
+
+    /* BROKER SECTION — compact one-line presentation. */
+    .broker-section {
+      background: var(--card) !important;
+      padding: 14px 22px !important;
+      gap: 16px !important;
+      border-top: 2px solid var(--gold) !important;
+      page-break-inside: avoid;
+    }
+    .broker-photo {
+      width: 56px !important;
+      height: 56px !important;
+      border: 2px solid var(--gold) !important;
+    }
+    .broker-info { padding: 0 !important; }
+    .greeting {
+      font-size: 0.66rem !important;
+      color: var(--gold) !important;
+      margin-bottom: 2px !important;
+    }
+    .broker-info h3 {
+      font-size: 1rem !important;
+      color: #1a1a1a !important;
+      margin: 0 0 2px !important;
+    }
+    .broker-title {
+      font-size: 0.72rem !important;
+      color: #4a4a4a !important;
+      margin-bottom: 6px !important;
+    }
+    .broker-info p {
+      font-size: 0.72rem !important;
+      color: #2a2a2a !important;
+      line-height: 1.45 !important;
+      margin-bottom: 8px !important;
+    }
+    .broker-contact-row {
+      gap: 14px !important;
+      font-size: 0.72rem !important;
+    }
+    .broker-contact-row a { color: var(--gold) !important; text-decoration: none !important; }
+
+    /* DISCLAIMER — fine print at the very bottom of the page. */
+    .disclaimer-box {
+      margin-top: 12px !important;
+      padding: 8px 10px !important;
+      background: transparent !important;
+      border: none !important;
+      page-break-inside: avoid;
+    }
+    .disclaimer-box p {
+      font-size: 0.62rem !important;
+      color: #6a6a6a !important;
+      line-height: 1.4 !important;
+      margin: 0 !important;
+    }
+    .disclaimer-box strong { color: #2a2a2a !important; }
+
+    /* Don't let URLs (auto-injected by some browsers) clutter the PDF. */
+    a[href]:after { content: '' !important; }
   }
 </style>
