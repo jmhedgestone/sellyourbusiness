@@ -684,18 +684,18 @@ const description =
     /* HEADER — compact, light, with gold underline. */
     .report-header {
       background: #ffffff !important;
-      border-bottom: 2px solid var(--gold) !important;
-      padding: 18px 22px !important;
+      border-bottom: 2px solid #a87c1f !important;
+      padding: 18px 24px !important;
       gap: 16px !important;
     }
     .report-hedgstone-logo {
       height: 28px !important;
       margin-bottom: 10px !important;
-      filter: brightness(0) saturate(100%) invert(15%) !important; /* dark logo */
+      filter: brightness(0) saturate(100%) invert(15%) !important; /* dark logo on white */
     }
     .report-title {
       font-size: 0.68rem !important;
-      color: var(--gold) !important;
+      color: #a87c1f !important;
       margin-bottom: 4px !important;
     }
     .report-business-name {
@@ -706,141 +706,160 @@ const description =
     }
     .report-industry {
       font-size: 0.82rem !important;
-      color: #4a4a4a !important;
+      color: #5a5042 !important;
     }
     .report-biz-logo, .report-biz-initials {
       width: 56px !important;
       height: 56px !important;
-      border: 1px solid var(--border) !important;
+      border: 1px solid #d8d2c0 !important;
     }
 
     /* VALUATION HERO — the centerpiece. */
     .valuation-hero {
       background: linear-gradient(135deg, #faf6e9 0%, #f1ebd7 100%) !important;
-      padding: 16px 22px 14px !important;
-      border-bottom: 1px solid var(--border) !important;
+      padding: 18px 24px 16px !important;
+      border-bottom: 1px solid #d8d2c0 !important;
       page-break-inside: avoid;
     }
     .valuation-label {
-      color: var(--gold) !important;
+      color: #a87c1f !important;
       font-size: 0.66rem !important;
       margin-bottom: 4px !important;
     }
     .valuation-range {
-      font-size: 2rem !important;
+      font-size: 2.2rem !important;
       color: #1a1a1a !important;
       line-height: 1 !important;
       margin-bottom: 6px !important;
     }
     .valuation-note {
       font-size: 0.8rem !important;
-      color: #4a4a4a !important;
+      color: #5a5042 !important;
       margin-bottom: 10px !important;
     }
     .confidence-bar { background: rgba(0,0,0,0.08) !important; height: 6px !important; }
     .confidence-fill {
-      background: linear-gradient(90deg, var(--gold-light), var(--gold)) !important;
+      background: linear-gradient(90deg, #d4a843, #a87c1f) !important;
     }
     .confidence-label { font-size: 0.68rem !important; color: #6a6a6a !important; }
 
-    /* FINANCIAL SNAPSHOT — three compact tiles. */
+    /* FINANCIAL SNAPSHOT — three compact tiles. Hardcoded colors below
+       (instead of var(--card) etc.) because Chrome's print preview
+       doesn't always re-resolve CSS custom properties overridden in
+       @media print, which made the boxes render with the dark screen
+       palette. */
     .breakdown-section {
       background: #ffffff !important;
-      padding: 12px 22px !important;
-      border-bottom: 1px solid var(--border) !important;
+      padding: 14px 24px !important;
+      border-bottom: 1px solid #d8d2c0 !important;
       page-break-inside: avoid;
     }
     .breakdown-title {
-      font-size: 0.66rem !important;
-      color: var(--gold) !important;
-      margin-bottom: 8px !important;
+      font-size: 0.7rem !important;
+      color: #a87c1f !important;
+      margin-bottom: 10px !important;
     }
     .breakdown-grid { gap: 10px !important; }
     .breakdown-item {
-      background: var(--card) !important;
-      border: 1px solid var(--border) !important;
-      padding: 8px 12px !important;
+      background: #f7f5ee !important;
+      border: 1px solid #e2dac1 !important;
+      padding: 10px 14px !important;
       border-radius: 6px !important;
     }
-    .b-label { font-size: 0.62rem !important; color: #6a6a6a !important; margin-bottom: 1px !important; }
-    .b-value { font-size: 1.05rem !important; color: #1a1a1a !important; line-height: 1.1 !important; }
-    .b-sub { font-size: 0.6rem !important; color: #888 !important; margin-top: 1px !important; }
+    .b-label { font-size: 0.62rem !important; color: #8a7a4a !important; margin-bottom: 2px !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; }
+    .b-value { font-size: 1.3rem !important; color: #a87c1f !important; line-height: 1.1 !important; font-weight: 700 !important; }
+    .b-sub { font-size: 0.6rem !important; color: #9a8a5a !important; margin-top: 2px !important; }
 
     /* METHODOLOGY — paragraph + table. */
     .method-section {
       background: #ffffff !important;
-      padding: 12px 22px !important;
-      border-bottom: 1px solid var(--border) !important;
+      padding: 14px 24px !important;
+      border-bottom: 1px solid #d8d2c0 !important;
       page-break-inside: avoid;
     }
     .method-title {
-      font-size: 0.66rem !important;
-      color: var(--gold) !important;
+      font-size: 0.68rem !important;
+      color: #a87c1f !important;
       margin-bottom: 6px !important;
     }
     .method-text {
-      font-size: 0.72rem !important;
+      font-size: 0.74rem !important;
       color: #3a3a3a !important;
-      line-height: 1.4 !important;
+      line-height: 1.45 !important;
       margin-bottom: 8px !important;
     }
     .method-table {
-      font-size: 0.74rem !important;
+      font-size: 0.78rem !important;
     }
     .method-table th {
       background: #f3eee0 !important;
-      color: var(--gold) !important;
-      font-size: 0.62rem !important;
-      padding: 5px 8px !important;
-      border-bottom: 1px solid var(--border) !important;
+      color: #a87c1f !important;
+      font-size: 0.64rem !important;
+      padding: 6px 10px !important;
+      border-bottom: 1px solid #d8d2c0 !important;
     }
     .method-table td {
-      padding: 5px 8px !important;
+      padding: 6px 10px !important;
       color: #2a2a2a !important;
       border-bottom: 1px solid #ece6d4 !important;
     }
     .method-table tr:last-child td { border-bottom: none !important; }
 
-    /* BROKER SECTION — compact print signature: photo + name + title +
-       contact line. Greeting and personal note paragraph hidden so the
-       whole report fits on one Letter page. */
+    /* BROKER SECTION — print signature: photo + name + title + contact.
+       Now sized generously to fill the rest of the page since the
+       personal-note paragraph is hidden in print. Hardcoded colors
+       instead of CSS variables (Chrome print-preview quirk). */
     .broker-section {
-      background: var(--card) !important;
-      padding: 10px 22px !important;
-      gap: 12px !important;
-      border-top: 2px solid var(--gold) !important;
+      background: #f7f5ee !important;
+      padding: 28px 28px !important;
+      gap: 24px !important;
+      border-top: 3px solid #a87c1f !important;
       page-break-inside: avoid;
       align-items: center !important;
     }
     .broker-photo {
-      width: 44px !important;
-      height: 44px !important;
-      border: 2px solid var(--gold) !important;
+      width: 100px !important;
+      height: 100px !important;
+      border: 3px solid #a87c1f !important;
+      flex-shrink: 0 !important;
     }
-    .broker-info { padding: 0 !important; }
+    .broker-info { padding: 0 !important; flex: 1 !important; }
     /* Hide the long-form note + greeting in print — keep signature only. */
     .broker-section .greeting,
     .broker-section #rPersonalNote,
     .broker-section .broker-info > p { display: none !important; }
     .broker-info h3 {
-      font-size: 0.95rem !important;
+      font-size: 1.5rem !important;
       color: #1a1a1a !important;
-      margin: 0 0 1px !important;
+      margin: 0 0 4px !important;
       line-height: 1.15 !important;
+      font-family: 'Playfair Display', serif !important;
     }
     .broker-title {
-      font-size: 0.7rem !important;
-      color: #4a4a4a !important;
-      margin: 0 0 3px !important;
-      line-height: 1.3 !important;
+      font-size: 0.88rem !important;
+      color: #5a5042 !important;
+      margin: 0 0 12px !important;
+      line-height: 1.4 !important;
     }
     .broker-contact-row {
-      gap: 12px !important;
-      font-size: 0.7rem !important;
+      gap: 18px !important;
+      font-size: 0.95rem !important;
       margin: 0 !important;
+      font-weight: 600 !important;
     }
-    .broker-contact-row a { color: var(--gold) !important; text-decoration: none !important; }
-    .broker-contact-row a svg { display: none !important; }
+    .broker-contact-row a {
+      color: #a87c1f !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    .broker-contact-row a svg {
+      display: inline-block !important;
+      stroke: #a87c1f !important;
+      width: 14px !important;
+      height: 14px !important;
+    }
 
     /* DISCLAIMER — fine print at the very bottom of the page. */
     .disclaimer-box {
