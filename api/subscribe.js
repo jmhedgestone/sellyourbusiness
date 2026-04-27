@@ -126,9 +126,9 @@ export default async function handler(req, res) {
       subject:  `New newsletter subscriber: ${email}`,
       html: `
         <div style="font-family:Inter,Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;background:#f9fafb;border-radius:12px;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2db87f;margin-bottom:8px;">New Newsletter Subscriber</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#d4a843;margin-bottom:8px;">New Newsletter Subscriber</div>
           <h2 style="margin:0 0 4px;font-size:20px;color:#0d1117;">${firstName || '(no name)'}</h2>
-          <p style="margin:0 0 16px;color:#374151;"><a href="mailto:${email}" style="color:#2db87f;">${email}</a></p>
+          <p style="margin:0 0 16px;color:#374151;"><a href="mailto:${email}" style="color:#d4a843;">${email}</a></p>
           <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
             <tr><td style="padding:8px 12px;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">Source</td><td style="padding:8px 12px;font-size:13px;">${source}</td></tr>
             ${utmLines}

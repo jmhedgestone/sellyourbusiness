@@ -66,8 +66,8 @@
    defined here too so the pillar hub pages render an identical green-bordered
    block instead of a plain unstyled paragraph. */
 .answer-box {
-  background: rgba(45,184,127,0.06);
-  border: 1px solid rgba(45,184,127,0.25);
+  background: rgba(212,168,67,0.06);
+  border: 1px solid rgba(212,168,67,0.25);
   border-radius: 12px;
   padding: 24px 28px;
   margin: 32px 0 48px;
@@ -126,7 +126,7 @@
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 .step-entry:hover {
-  border-color: rgba(45,184,127,0.35);
+  border-color: rgba(212,168,67,0.35);
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(0,0,0,0.25);
 }
@@ -170,8 +170,8 @@
 .hub-cta {
   margin-top: 72px;
   padding: 48px 36px;
-  background: linear-gradient(135deg, rgba(45,184,127,0.08) 0%, rgba(45,184,127,0.02) 100%);
-  border: 1px solid rgba(45,184,127,0.25);
+  background: linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(212,168,67,0.02) 100%);
+  border: 1px solid rgba(212,168,67,0.25);
   border-radius: 16px;
   text-align: center;
 }
@@ -213,7 +213,7 @@
   object-fit: cover;
   object-position: top;
   border-radius: 10px;
-  border: 2px solid rgba(45,184,127,0.3);
+  border: 2px solid rgba(212,168,67,0.3);
 }
 .hub-author .eyebrow {
   font-size: 0.72rem;
