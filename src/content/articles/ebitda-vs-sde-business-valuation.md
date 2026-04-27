@@ -160,4 +160,4 @@ A buyer unwilling to be specific is probably trying to compress the number. A pr
 4. Pull both your industry's SDE multiple range and EBITDA multiple range from [our benchmarks](/business-valuation/business-valuation-multiples-by-industry).
 5. Calculate both implied values. They should be in the same ballpark — if they're not, dig into your assumptions.
 
-For a real-world price range using both methods on your specific financials, the [free valuation](/funnel) is the fastest way to get a defensible number.
+For a real-world price range using both methods on your specific financials, the [free valuation](/valuation) is the fastest way to get a defensible number.

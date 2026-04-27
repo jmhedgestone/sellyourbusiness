@@ -74,7 +74,7 @@ async function sendCapiLead(req, d) {
     event_name: 'Lead',
     event_time: Math.floor(Date.now() / 1000),
     event_id: d.eventId, // dedup key — must match the browser pixel's eventID
-    event_source_url: req.headers['referer'] || `https://${req.headers['host'] || 'sellyourbusiness.com'}/funnel`,
+    event_source_url: req.headers['referer'] || `https://${req.headers['host'] || 'sellyourbusiness.com'}/valuation`,
     action_source: 'website',
     user_data: userData,
     custom_data: Object.assign(

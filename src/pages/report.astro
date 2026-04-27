@@ -180,7 +180,7 @@ const description =
     function loadReport() {
       const raw = localStorage.getItem('valuationData');
       if (!raw) {
-        window.location.href = '/funnel';
+        window.location.href = '/valuation';
         return;
       }
       const d = JSON.parse(raw);

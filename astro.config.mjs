@@ -9,6 +9,12 @@ export default defineConfig({
     webAnalytics: { enabled: false },
     imageService: false,
   }),
+  // 301 the old funnel URL to /valuation so any external links, ads, or
+  // existing IG posts pointing at /funnel keep working and SEO authority
+  // transfers cleanly. Astro emits a permanent redirect at the static layer.
+  redirects: {
+    '/funnel': '/valuation',
+  },
   integrations: [
     sitemap({
       // /report is a dynamic post-submit page with noindex — keep it out of the sitemap too.
