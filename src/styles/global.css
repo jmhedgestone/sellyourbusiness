@@ -175,19 +175,8 @@ footer {
   margin-bottom: 24px;
 }
 .footer-brand img { height: 68px; margin-bottom: 14px; }
-.footer-brand p { font-size: 0.85rem; color: var(--muted); max-width: 280px; }
-.footer-brand .footer-location {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 10px;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-.footer-brand .footer-location svg {
-  color: var(--gold);
-  flex-shrink: 0;
-}
-.footer-links h4 { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.footer-brand p { font-size: 0.85rem; color: var(--muted); max-width: 320px; line-height: 1.65; }
+.footer-links h4 { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
 .footer-links ul { list-style: none; }
 .footer-links li { margin-bottom: 8px; }
 .footer-links a { font-size: 0.9rem; color: var(--muted); transition: color 0.2s; }
