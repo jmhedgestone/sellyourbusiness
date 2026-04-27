@@ -717,25 +717,25 @@ const description =
     /* VALUATION HERO — the centerpiece. */
     .valuation-hero {
       background: linear-gradient(135deg, #faf6e9 0%, #f1ebd7 100%) !important;
-      padding: 22px 22px 18px !important;
+      padding: 16px 22px 14px !important;
       border-bottom: 1px solid var(--border) !important;
       page-break-inside: avoid;
     }
     .valuation-label {
       color: var(--gold) !important;
-      font-size: 0.68rem !important;
-      margin-bottom: 6px !important;
+      font-size: 0.66rem !important;
+      margin-bottom: 4px !important;
     }
     .valuation-range {
-      font-size: 2.4rem !important;
+      font-size: 2rem !important;
       color: #1a1a1a !important;
       line-height: 1 !important;
-      margin-bottom: 8px !important;
+      margin-bottom: 6px !important;
     }
     .valuation-note {
-      font-size: 0.85rem !important;
+      font-size: 0.8rem !important;
       color: #4a4a4a !important;
-      margin-bottom: 14px !important;
+      margin-bottom: 10px !important;
     }
     .confidence-bar { background: rgba(0,0,0,0.08) !important; height: 6px !important; }
     .confidence-fill {
@@ -746,101 +746,101 @@ const description =
     /* FINANCIAL SNAPSHOT — three compact tiles. */
     .breakdown-section {
       background: #ffffff !important;
-      padding: 16px 22px !important;
+      padding: 12px 22px !important;
       border-bottom: 1px solid var(--border) !important;
       page-break-inside: avoid;
     }
     .breakdown-title {
-      font-size: 0.68rem !important;
+      font-size: 0.66rem !important;
       color: var(--gold) !important;
-      margin-bottom: 10px !important;
+      margin-bottom: 8px !important;
     }
-    .breakdown-grid { gap: 12px !important; }
+    .breakdown-grid { gap: 10px !important; }
     .breakdown-item {
       background: var(--card) !important;
       border: 1px solid var(--border) !important;
-      padding: 10px 14px !important;
+      padding: 8px 12px !important;
       border-radius: 6px !important;
     }
-    .b-label { font-size: 0.66rem !important; color: #6a6a6a !important; margin-bottom: 2px !important; }
-    .b-value { font-size: 1.15rem !important; color: #1a1a1a !important; line-height: 1.1 !important; }
-    .b-sub { font-size: 0.66rem !important; color: #888 !important; margin-top: 1px !important; }
+    .b-label { font-size: 0.62rem !important; color: #6a6a6a !important; margin-bottom: 1px !important; }
+    .b-value { font-size: 1.05rem !important; color: #1a1a1a !important; line-height: 1.1 !important; }
+    .b-sub { font-size: 0.6rem !important; color: #888 !important; margin-top: 1px !important; }
 
     /* METHODOLOGY — paragraph + table. */
     .method-section {
       background: #ffffff !important;
-      padding: 14px 22px !important;
+      padding: 12px 22px !important;
       border-bottom: 1px solid var(--border) !important;
       page-break-inside: avoid;
     }
     .method-title {
-      font-size: 0.68rem !important;
+      font-size: 0.66rem !important;
       color: var(--gold) !important;
-      margin-bottom: 8px !important;
+      margin-bottom: 6px !important;
     }
     .method-text {
-      font-size: 0.78rem !important;
+      font-size: 0.72rem !important;
       color: #3a3a3a !important;
-      line-height: 1.45 !important;
-      margin-bottom: 10px !important;
+      line-height: 1.4 !important;
+      margin-bottom: 8px !important;
     }
     .method-table {
-      font-size: 0.78rem !important;
+      font-size: 0.74rem !important;
     }
     .method-table th {
       background: #f3eee0 !important;
       color: var(--gold) !important;
-      font-size: 0.66rem !important;
-      padding: 6px 10px !important;
+      font-size: 0.62rem !important;
+      padding: 5px 8px !important;
       border-bottom: 1px solid var(--border) !important;
     }
     .method-table td {
-      padding: 6px 10px !important;
+      padding: 5px 8px !important;
       color: #2a2a2a !important;
       border-bottom: 1px solid #ece6d4 !important;
     }
     .method-table tr:last-child td { border-bottom: none !important; }
 
-    /* BROKER SECTION — compact one-line presentation. */
+    /* BROKER SECTION — compact print signature: photo + name + title +
+       contact line. Greeting and personal note paragraph hidden so the
+       whole report fits on one Letter page. */
     .broker-section {
       background: var(--card) !important;
-      padding: 14px 22px !important;
-      gap: 16px !important;
+      padding: 10px 22px !important;
+      gap: 12px !important;
       border-top: 2px solid var(--gold) !important;
       page-break-inside: avoid;
+      align-items: center !important;
     }
     .broker-photo {
-      width: 56px !important;
-      height: 56px !important;
+      width: 44px !important;
+      height: 44px !important;
       border: 2px solid var(--gold) !important;
     }
     .broker-info { padding: 0 !important; }
-    .greeting {
-      font-size: 0.66rem !important;
-      color: var(--gold) !important;
-      margin-bottom: 2px !important;
-    }
+    /* Hide the long-form note + greeting in print — keep signature only. */
+    .broker-section .greeting,
+    .broker-section #rPersonalNote,
+    .broker-section .broker-info > p { display: none !important; }
     .broker-info h3 {
-      font-size: 1rem !important;
+      font-size: 0.95rem !important;
       color: #1a1a1a !important;
-      margin: 0 0 2px !important;
+      margin: 0 0 1px !important;
+      line-height: 1.15 !important;
     }
     .broker-title {
-      font-size: 0.72rem !important;
+      font-size: 0.7rem !important;
       color: #4a4a4a !important;
-      margin-bottom: 6px !important;
-    }
-    .broker-info p {
-      font-size: 0.72rem !important;
-      color: #2a2a2a !important;
-      line-height: 1.45 !important;
-      margin-bottom: 8px !important;
+      margin: 0 0 3px !important;
+      line-height: 1.3 !important;
     }
     .broker-contact-row {
-      gap: 14px !important;
-      font-size: 0.72rem !important;
+      gap: 12px !important;
+      font-size: 0.7rem !important;
+      margin: 0 !important;
     }
     .broker-contact-row a { color: var(--gold) !important; text-decoration: none !important; }
+    .broker-contact-row a svg { display: none !important; }
 
     /* DISCLAIMER — fine print at the very bottom of the page. */
     .disclaimer-box {
