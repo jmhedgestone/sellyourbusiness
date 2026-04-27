@@ -202,4 +202,4 @@ The add-back schedule, defensible and documented, is what unlocks the $1M+ in ad
 2. Build the add-back spreadsheet, line by line, with supporting document references.
 3. Be conservative on anything ambiguous — over-claiming costs more than under-claiming.
 4. If your SDE is over $1M, plan for a QoE before going to market.
-5. Get a [free valuation](/funnel) to see what your add-backs translate to as a real-market sale price.
+5. Get a [free valuation](/valuation) to see what your add-backs translate to as a real-market sale price.

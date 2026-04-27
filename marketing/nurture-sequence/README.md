@@ -101,7 +101,7 @@ Each `.html` file is **paste-ready** for Resend's HTML editor:
 - **Short paragraphs:** 1-3 sentences each; mobile-first
 - **One idea per email:** depth over breadth
 - **Soft CTA at the end:** link to free valuation funnel, but don't push
-- **Use the deep-link with UTMs:** `https://sellyourbusiness.com/funnel?utm_source=newsletter&utm_medium=email&utm_campaign=nurture-week-N`
+- **Use the deep-link with UTMs:** `https://sellyourbusiness.com/valuation?utm_source=newsletter&utm_medium=email&utm_campaign=nurture-week-N`
 
 ## Updating
 

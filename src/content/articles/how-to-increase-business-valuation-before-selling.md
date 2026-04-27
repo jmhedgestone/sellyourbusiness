@@ -166,4 +166,4 @@ That's a $1M difference from 18 months of intentional work — most of which doe
 4. Build a 12- or 24-month plan, work it monthly.
 5. Re-baseline at 12 months — multiple movement is real and measurable.
 
-A [free valuation](/funnel) gives you the starting number to plan against. Without it, you're guessing whether the work is paying off.
+A [free valuation](/valuation) gives you the starting number to plan against. Without it, you're guessing whether the work is paying off.
