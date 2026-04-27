@@ -2,7 +2,18 @@
 
 10 weekly emails for new newsletter subscribers. Each repurposes a pillar article into a tighter, more personal, voice-driven format — written in John's voice as a working broker, not a textbook.
 
-## How to load these into Resend
+## ⭐ Recommended path: GoHighLevel (true per-subscriber drip)
+
+If you have a GHL sub-account, **use that instead of Resend Broadcasts**. GHL gives each subscriber their own drip starting from their signup time — Day 0, +7, +14, …+63 — instead of everyone getting the same email on the same Tuesday.
+
+**See [GHL_SETUP.md](./GHL_SETUP.md) for the full workflow setup** (~30 min one-time):
+1. Create an Inbound Webhook trigger in a GHL workflow
+2. Set `GHL_WEBHOOK_URL` env var on Vercel
+3. Build the 10-step drip in GHL using the HTML files in this folder
+
+Once that's wired, every newsletter signup at the bottom of an article auto-flows into your CRM and triggers the drip from Day 0.
+
+## Fallback: Resend Broadcasts
 
 Resend doesn't currently have a true automated drip sequence. The closest pattern is to schedule each email as a **Broadcast** 7 days apart, sent to the `SellYourBusiness Newsletter` Audience.
 

@@ -1,6 +1,11 @@
 // Newsletter subscribe endpoint.
-// - Stores the contact in a Resend Audience if RESEND_AUDIENCE_ID is set
-// - Always sends a notification email to John so no leads get lost
+// - Forwards the subscriber to a GoHighLevel inbound webhook if
+//   GHL_WEBHOOK_URL is set (primary nurture system — GHL workflow handles
+//   the 10-week drip, contact record, and tagging)
+// - Mirrors the contact into a Resend Audience if RESEND_AUDIENCE_ID is set
+//   (backup list for one-off broadcasts; survives any future GHL migration)
+// - Always sends a notification email to John so no leads get lost even if
+//   both upstream integrations fail
 // - Captures UTMs for attribution
 // - Verifies Cloudflare Turnstile when a token is provided (optional — the
 //   newsletter form is lower-friction than the full lead form, so we accept
@@ -48,6 +53,42 @@ export default async function handler(req, res) {
   // Optional Turnstile check — accept submissions without it, but track verified state.
   const turnstile = await verifyTurnstile(body['cf-turnstile-response']);
 
+  // ─── 0) Primary: forward to GHL inbound webhook
+  // GHL receives this payload and the workflow attached to the webhook handles
+  // contact creation/update + the 10-step nurture drip. Best-effort — never
+  // blocks the user response, never throws.
+  let ghlResult = { skipped: 'no GHL_WEBHOOK_URL' };
+  const ghlWebhookUrl = process.env.GHL_WEBHOOK_URL;
+  if (ghlWebhookUrl) {
+    try {
+      const ghlPayload = {
+        email,
+        firstName: firstName || '',
+        source: source,
+        tags: ['newsletter', 'nurture-active', `source-${source}`],
+        // GHL surfaces nested fields under customData when configured in the workflow
+        customData: {
+          subscriberSource: source,
+          context: (body.context || '').toString().slice(0, 200),
+          ...utms,
+        },
+      };
+      const r = await fetch(ghlWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ghlPayload),
+      });
+      const text = await r.text().catch(() => '');
+      ghlResult = r.ok
+        ? { ok: true, status: r.status }
+        : { ok: false, status: r.status, body: text.slice(0, 240) };
+      if (!r.ok) console.error('GHL webhook non-200:', r.status, text.slice(0, 240));
+    } catch (err) {
+      ghlResult = { ok: false, error: String(err) };
+      console.error('GHL webhook fetch failed:', err);
+    }
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
   const audienceId = process.env.RESEND_AUDIENCE_ID;
 
@@ -91,7 +132,8 @@ export default async function handler(req, res) {
           <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
             <tr><td style="padding:8px 12px;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">Source</td><td style="padding:8px 12px;font-size:13px;">${source}</td></tr>
             ${utmLines}
-            <tr><td style="padding:8px 12px;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">Audience</td><td style="padding:8px 12px;font-size:13px;">${audienceId ? (audienceResult.duplicate ? 'duplicate' : 'added') : 'not configured'}</td></tr>
+            <tr><td style="padding:8px 12px;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">GHL Drip</td><td style="padding:8px 12px;font-size:13px;">${ghlResult.skipped ? 'not configured' : (ghlResult.ok ? 'started' : `❌ failed (${ghlResult.status || ''})`)}</td></tr>
+            <tr><td style="padding:8px 12px;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">Resend Audience</td><td style="padding:8px 12px;font-size:13px;">${audienceId ? (audienceResult.duplicate ? 'duplicate' : 'added') : 'not configured'}</td></tr>
             <tr><td style="padding:8px 12px;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">Captcha</td><td style="padding:8px 12px;font-size:13px;">${turnstile.skipped ? 'not provided' : (turnstile.ok ? 'verified' : 'failed')}</td></tr>
           </table>
         </div>`,
