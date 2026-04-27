@@ -117,11 +117,26 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const d = req.body;
+  const d = req.body || {};
+  console.log('submit.received', {
+    hasEmail: !!d.ownerEmail,
+    hasName: !!d.ownerName,
+    hasCaptcha: !!d['cf-turnstile-response'],
+    captchaLen: d['cf-turnstile-response'] ? String(d['cf-turnstile-response']).length : 0,
+    secretConfigured: !!process.env.TURNSTILE_SECRET,
+    referer: req.headers['referer'] || '(none)',
+  });
 
   // Verify Cloudflare Turnstile token
   const token = d['cf-turnstile-response'];
-  if (!token) return res.status(400).json({ error: 'Missing captcha token' });
+  if (!token) {
+    console.error('submit.400.missing_captcha');
+    return res.status(400).json({ error: 'Missing captcha token' });
+  }
+  if (!process.env.TURNSTILE_SECRET) {
+    console.error('submit.500.missing_turnstile_secret_env');
+    return res.status(500).json({ error: 'Server misconfigured (TURNSTILE_SECRET unset)' });
+  }
 
   const verify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
     method: 'POST',
@@ -131,10 +146,17 @@ export default async function handler(req, res) {
       response: token,
     }),
   });
-  const verifyData = await verify.json();
+  const verifyData = await verify.json().catch(() => ({}));
   if (!verifyData.success) {
+    console.error('submit.400.captcha_failed', {
+      'error-codes': verifyData['error-codes'],
+      hostname: verifyData.hostname,
+      action: verifyData.action,
+      challenge_ts: verifyData.challenge_ts,
+    });
     return res.status(400).json({ error: 'Captcha verification failed', details: verifyData['error-codes'] });
   }
+  console.log('submit.captcha_ok', { hostname: verifyData.hostname });
 
   // Send email via Resend
   const resend = new Resend(process.env.RESEND_API_KEY);
