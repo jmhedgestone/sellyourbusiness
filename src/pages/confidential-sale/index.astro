@@ -1,0 +1,279 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
+import '../../styles/hub.css';
+
+const title = 'How to Sell a Business Confidentially: The Complete Guide (2026)';
+const description =
+  'How to keep a business sale confidential from start to finish — blind teasers, NDAs, buyer screening, employee disclosure, and closing-day communication. Written by John Matsis, business broker and principal at HedgeStone Business Advisors.';
+
+const stepOrder: Record<string, number> = {
+  'how-to-keep-a-business-sale-confidential': 1,
+  'blind-teaser-business-sale': 2,
+  'confidentiality-agreement-when-selling-a-business': 3,
+  'sell-business-without-employees-finding-out': 4,
+  'how-to-qualify-buyers-before-sharing-financials': 5,
+};
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'confidential-sale')
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
+
+const pageUrl = 'https://sellyourbusiness.com/confidential-sale';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'Confidential Sale', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'How to Sell a Business Confidentially — Step-by-Step',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How do you sell a business without anyone finding out?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'A confidential business sale uses a blind teaser — a one-page summary that describes the business without naming it — distributed to qualified buyers. Interested buyers must sign an NDA before the company is identified. Employees, customers, suppliers, and competitors are not notified until after a Letter of Intent is signed and the deal is near closing. A professional broker manages all buyer communication so the owner is never directly identifiable.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is a blind teaser in a business sale?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            "A blind teaser is a one-page anonymous marketing document that describes a business for sale without naming it. It covers industry, general geography, size, earnings range, and reason for sale — enough for a qualified buyer to assess interest, but nothing that identifies the company. Buyers who want more information sign an NDA before the business name is disclosed.",
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do employees have to be told about a business sale?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'In most cases, no. Private business owners have no general legal obligation to notify employees before closing, except where WARN Act requirements, change-of-control clauses in employment contracts, or union agreements apply. Most employees learn of the sale on or just before closing day, during a managed transition announcement delivered jointly by the seller and the buyer.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do you screen buyers before sharing financials?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Buyer screening involves three gates: (1) NDA signed before the business is named, (2) proof of financial capacity — bank statements, lender pre-approval, or fund documentation — before the Confidential Information Memorandum is released, and (3) a qualification conversation with the broker to assess acquisition rationale, experience, and timeline. Buyers who cannot clear all three gates do not receive detailed financials.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap: Record<string, { step: number; label: string }> = {
+  'how-to-keep-a-business-sale-confidential': { step: 1, label: 'The System' },
+  'blind-teaser-business-sale': { step: 2, label: 'Blind Teaser' },
+  'confidentiality-agreement-when-selling-a-business': { step: 3, label: 'The NDA' },
+  'sell-business-without-employees-finding-out': { step: 4, label: 'Employees' },
+  'how-to-qualify-buyers-before-sharing-financials': { step: 5, label: 'Buyer Screening' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">Confidential Sale</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">Complete Guide</div>
+      <h1>Selling a Business Confidentially</h1>
+      <p class="lede">
+        The system brokers use to take a business to market without employees, customers,
+        competitors, or suppliers finding out — from the first blind teaser through closing-day
+        disclosure. Written from the perspective of a working broker, not a textbook.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        A confidential sale runs through four layers of protection: a blind teaser that markets
+        the business without naming it, a signed NDA before any identity is disclosed, staged
+        information release tied to buyer qualification (proof of funds before the CIM, LOI
+        before site visits), and strict need-to-know discipline until closing. Employees and
+        customers are notified at or after closing — not before. A professional broker manages
+        all buyer contact so the owner is never directly identifiable during the process.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>Why confidentiality is the most important factor in a successful sale</h2>
+      <p>
+        Most business owners think about price first. But price means nothing if the sale process
+        damages the business before it closes. A key employee who learns of the sale starts
+        interviewing elsewhere. A major customer begins qualifying alternatives. A competitor uses
+        your listing to poach staff. Each of these scenarios reduces the value of what you're
+        selling — often by more than the broker's fee.
+      </p>
+      <p>
+        The articles below cover the complete confidentiality system: how to market without
+        being identified, what the NDA must include, how to screen buyers before sharing anything
+        sensitive, and how to manage the employee disclosure that happens at closing. These pages
+        complement our <a href="/how-to-sell-a-business">complete guide to selling a business</a>
+        and the <a href="/business-valuation">business valuation guide</a> — confidentiality is
+        the thread that runs through the entire process.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>The five elements of a confidential sale</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/confidential-sale/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/confidential-sale/${a.slug}`} class="read-more">Read this guide →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Start with a confidential valuation</h2>
+      <p>
+        Before you go to market, you need to know what your business is worth. Our free
+        valuation is confidential by design — your information is never shared, and there's
+        no obligation. Takes under 3 minutes.
+      </p>
+      <a href="/valuation" class="btn btn-primary btn-lg">Get My Free Valuation →</a>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>How do you sell a business without anyone finding out?</summary>
+          <p>
+            Use a blind teaser — an anonymous one-page summary that describes the business without
+            naming it — distributed to qualified buyers through a broker's network. Interested
+            buyers sign an NDA before the business is identified. Employees, customers, and
+            suppliers are notified at or after closing, not during the process.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What is a blind teaser in a business sale?</summary>
+          <p>
+            A blind teaser is a one-page anonymous marketing document that describes a business
+            for sale without naming it — covering industry, geography, size, earnings range, and
+            reason for sale. Buyers who want more information must sign an NDA before the company
+            name is disclosed.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Do employees have to be told about a business sale?</summary>
+          <p>
+            In most cases, no. Private business owners have no general legal obligation to notify
+            employees before closing, except in specific situations involving WARN Act obligations,
+            change-of-control clauses in employment contracts, or union agreements. Most employees
+            learn of the sale on closing day during a jointly managed transition announcement.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How do you screen buyers before sharing financials?</summary>
+          <p>
+            Three gates: (1) signed NDA before the business is named, (2) proof of financial
+            capacity before the Confidential Information Memorandum is released, and (3) a
+            qualification conversation to assess acquisition rationale, experience, and timeline.
+            Buyers who can't clear all three gates don't receive detailed financials.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <EmailCapture source="hub-confidential-sale" contextTitle="Confidential Sale" />
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors, a
+          national brokerage network with 300+ agents serving private sellers, family offices, and
+          private equity firms. He has hands-on experience building, acquiring, exiting, and
+          investing in businesses and real estate across a wide range of industries.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>
