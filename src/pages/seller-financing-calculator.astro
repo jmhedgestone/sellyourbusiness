@@ -83,6 +83,31 @@ const schema = [
       line-height: 1.75;
     }
 
+    /* ── BREADCRUMB ────────────────────────────────────────────── */
+    .calc-page > .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--muted);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 40px;
+    }
+    .calc-page > .breadcrumb a {
+      color: var(--muted);
+      transition: color 0.15s;
+      font-weight: 500;
+    }
+    .calc-page > .breadcrumb a:hover { color: var(--gold); }
+    .calc-page > .breadcrumb span[aria-hidden] { color: var(--gold); font-weight: 700; }
+    .calc-page > .breadcrumb .current { color: var(--text); font-weight: 600; }
+
     /* ── TWO-COLUMN LAYOUT ─────────────────────────────────────── */
     .calc-layout {
       display: grid;
@@ -449,7 +474,7 @@ const schema = [
   </style>
 
   <div class="calc-page">
-    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:32px">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">Home</a>
       <span aria-hidden="true">›</span>
       <span class="current">Seller Financing Calculator</span>
