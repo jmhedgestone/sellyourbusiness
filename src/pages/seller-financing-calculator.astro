@@ -1,0 +1,942 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ScrollDepth from '../components/ScrollDepth.astro';
+
+const title = 'Seller Financing Calculator | Installment Sale Tax & Proceeds';
+const description =
+  'Model a seller-financed deal: see how a seller note spreads your capital gains tax, what you earn in interest, and how your net after-tax compares to an all-cash sale — instantly.';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Seller Financing Calculator',
+    applicationCategory: 'FinanceApplication',
+    description,
+    url: 'https://sellyourbusiness.com/seller-financing-calculator',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: { '@type': 'Organization', name: 'HedgeStone Business Advisors', url: 'https://www.hedgestone.com' },
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How does an installment sale reduce capital gains tax?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: "Under IRS installment sale rules (Form 6252), capital gains are recognized proportionally as you receive each payment, rather than all in the year of sale. The gross profit percentage (gain ÷ sale price) determines what fraction of each dollar received is taxable gain. A seller who takes 30% down and a 5-year note spreads 70% of the gain over five years instead of paying tax on it at closing.",
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is interest on a seller note taxed differently than the principal?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Interest income on a seller note is taxed as ordinary income at your marginal federal rate — not at the lower long-term capital gains rate. The principal payments (times your gross profit percentage) are taxed as capital gains. This distinction matters when modeling the true after-tax return on a seller-financed deal.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is a gross profit percentage in an installment sale?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The gross profit percentage (GPP) is your total gain divided by the sale price: GPP = (Sale Price − Adjusted Basis) ÷ Sale Price. It determines what share of each principal dollar received is treated as taxable gain. If your GPP is 80%, you recognize $0.80 of capital gain for every $1.00 of principal received.',
+        },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <style>
+    /* ── PAGE WRAP ─────────────────────────────────────────────── */
+    .calc-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 24px 80px;
+    }
+
+    .calc-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 56px;
+    }
+    .calc-header h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 16px;
+    }
+    .calc-header .lede {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    /* ── TWO-COLUMN LAYOUT ─────────────────────────────────────── */
+    .calc-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── INPUT PANEL ───────────────────────────────────────────── */
+    .calc-inputs {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: sticky;
+      top: 88px;
+    }
+    .calc-inputs h2 {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+    .field label .hint {
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .input-prefix-wrap {
+      position: relative;
+    }
+    .input-prefix-wrap .prefix,
+    .input-prefix-wrap .suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    .input-prefix-wrap .prefix { left: 13px; }
+    .input-prefix-wrap .suffix { right: 13px; }
+    .input-prefix-wrap input { padding-left: 26px; }
+    .input-prefix-wrap input.has-suffix { padding-right: 28px; }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      padding: 10px 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,168,67,0.1);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .section-divider {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 24px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(212,168,67,0.15);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .checkbox-row span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── RESULTS PANEL ─────────────────────────────────────────── */
+    .calc-results { min-width: 0; }
+
+    /* Metric cards */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+    }
+    .metric-card.highlight {
+      border-color: rgba(212,168,67,0.35);
+      background: rgba(212,168,67,0.04);
+    }
+    .metric-card .metric-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .metric-card .metric-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1.1;
+    }
+    .metric-card .metric-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.45;
+    }
+    .metric-card .metric-value.negative { color: #e05c5c; }
+    .metric-card .metric-value.positive { color: #4caf78; }
+
+    /* Comparison banner */
+    .comparison-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .comp-side { text-align: center; }
+    .comp-side .comp-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .comp-side .comp-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .comp-side .comp-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .comp-vs {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+    .comp-delta {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .comp-delta.positive { background: rgba(76,175,120,0.12); color: #4caf78; }
+    .comp-delta.negative { background: rgba(224,92,92,0.12); color: #e05c5c; }
+
+    /* GPP / installment info strip */
+    .info-strip {
+      background: rgba(212,168,67,0.06);
+      border: 1px solid rgba(212,168,67,0.15);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .info-strip .info-item strong {
+      display: block;
+      font-size: 1rem;
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* Year-by-year table */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .table-title {
+      padding: 16px 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .table-title span { color: var(--muted); font-weight: 400; font-size: 0.78rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    thead th {
+      padding: 10px 14px;
+      text-align: right;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    thead th:first-child { text-align: left; }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(212,168,67,0.03); }
+    tbody td {
+      padding: 10px 14px;
+      text-align: right;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    tbody td:first-child { text-align: left; color: var(--text); font-weight: 600; }
+    tbody td.gain { color: var(--gold); }
+    tbody td.tax { color: #e05c5c; }
+    tfoot td {
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface);
+      border-top: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    tfoot td:first-child { text-align: left; }
+    tfoot td.gain { color: var(--gold); }
+    tfoot td.tax { color: #e05c5c; }
+
+    /* Closing row */
+    .closing-row td { background: rgba(212,168,67,0.04); font-style: italic; }
+
+    /* ── EXPLAINER ─────────────────────────────────────────────── */
+    .calc-explainer {
+      margin-top: 72px;
+      border-top: 1px solid var(--border);
+      padding-top: 56px;
+    }
+    .explainer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 40px;
+    }
+    .explainer-grid h3 {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .explainer-grid p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+
+    /* ── CTA ───────────────────────────────────────────────────── */
+    .calc-cta {
+      margin-top: 56px;
+      text-align: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 36px;
+    }
+    .calc-cta h2 { font-size: 1.7rem; margin-bottom: 12px; }
+    .calc-cta p { color: var(--muted); margin-bottom: 28px; font-size: 1rem; }
+
+    /* ── DISCLAIMER ────────────────────────────────────────────── */
+    .disclaimer {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 32px;
+      line-height: 1.6;
+      opacity: 0.7;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .calc-layout { grid-template-columns: 1fr; }
+      .calc-inputs { position: static; }
+      .explainer-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 640px) {
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .comparison-banner { grid-template-columns: 1fr; text-align: center; }
+      .comp-vs { display: none; }
+      .info-strip { flex-direction: column; gap: 12px; }
+    }
+    @media (max-width: 480px) {
+      .metric-grid { grid-template-columns: 1fr; }
+      table { font-size: 0.76rem; }
+      thead th, tbody td, tfoot td { padding: 8px 10px; }
+    }
+  </style>
+
+  <div class="calc-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:32px">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">Seller Financing Calculator</span>
+    </nav>
+
+    <header class="calc-header">
+      <div class="section-label">Free Calculator</div>
+      <h1>Seller Financing Calculator</h1>
+      <p class="lede">
+        Model how a seller note changes your capital gains tax, total proceeds, and net
+        after-tax return — and see the side-by-side comparison against an all-cash sale.
+      </p>
+    </header>
+
+    <div class="calc-layout">
+
+      <!-- ── INPUTS ── -->
+      <aside class="calc-inputs">
+        <h2>Deal Parameters</h2>
+
+        <div class="section-divider">Sale Details</div>
+
+        <div class="field">
+          <label for="salePrice">Sale Price</label>
+          <div class="input-prefix-wrap">
+            <span class="prefix">$</span>
+            <input type="text" id="salePrice" inputmode="numeric" value="2,000,000" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="basis">Adjusted Cost Basis <span class="hint">(your tax basis)</span></label>
+          <div class="input-prefix-wrap">
+            <span class="prefix">$</span>
+            <input type="text" id="basis" inputmode="numeric" value="400,000" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="downPct">Down Payment at Closing</label>
+          <div class="input-prefix-wrap">
+            <input type="text" id="downPct" inputmode="decimal" value="30" class="has-suffix" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="section-divider">Seller Note Terms</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="noteRate">Interest Rate</label>
+            <div class="input-prefix-wrap">
+              <input type="text" id="noteRate" inputmode="decimal" value="7" class="has-suffix" />
+              <span class="suffix">%</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="noteTerm">Term</label>
+            <div class="input-prefix-wrap">
+              <input type="text" id="noteTerm" inputmode="numeric" value="5" class="has-suffix" />
+              <span class="suffix">yrs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="paymentType">Payment Structure</label>
+          <select id="paymentType">
+            <option value="interest-only">Interest-Only + Balloon</option>
+            <option value="amortizing">Fully Amortizing</option>
+          </select>
+        </div>
+
+        <div class="section-divider">Tax Rates</div>
+
+        <div class="field">
+          <label for="ltcgRate">Federal Capital Gains Rate</label>
+          <select id="ltcgRate">
+            <option value="0">0%</option>
+            <option value="15">15%</option>
+            <option value="20" selected>20%</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="checkbox-row">
+            <input type="checkbox" id="niit" checked />
+            <span>Include 3.8% Net Investment Income Tax (NIIT)</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <label for="stateRate">State Capital Gains Rate <span class="hint">(optional)</span></label>
+          <div class="input-prefix-wrap">
+            <input type="text" id="stateRate" inputmode="decimal" value="0" class="has-suffix" placeholder="0" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ordinaryRate">Ordinary Income Rate <span class="hint">(for interest)</span></label>
+          <div class="input-prefix-wrap">
+            <input type="text" id="ordinaryRate" inputmode="decimal" value="37" class="has-suffix" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── RESULTS ── -->
+      <div class="calc-results" id="calcResults">
+
+        <!-- Key metrics -->
+        <div class="metric-grid">
+          <div class="metric-card highlight">
+            <div class="metric-label">Net After Tax (Installment)</div>
+            <div class="metric-value" id="m-netInstallment">—</div>
+            <div class="metric-sub" id="m-netInstallmentSub">principal + interest, after all taxes</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Net After Tax (All Cash)</div>
+            <div class="metric-value" id="m-netCash">—</div>
+            <div class="metric-sub">pay full capital gains at closing</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Total Interest Earned</div>
+            <div class="metric-value" id="m-totalInterest">—</div>
+            <div class="metric-sub" id="m-totalInterestSub">over note term</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Tax Deferred vs. Cash Sale</div>
+            <div class="metric-value" id="m-taxDeferred">—</div>
+            <div class="metric-sub">capital gains tax pushed to future years</div>
+          </div>
+        </div>
+
+        <!-- Comparison banner -->
+        <div class="comparison-banner">
+          <div class="comp-side">
+            <div class="comp-label">Installment Sale</div>
+            <div class="comp-value" id="c-installment">—</div>
+            <div class="comp-sub">total gross received</div>
+          </div>
+          <div class="comp-vs">
+            vs.
+            <div class="comp-delta" id="c-delta">—</div>
+          </div>
+          <div class="comp-side">
+            <div class="comp-label">All-Cash Sale</div>
+            <div class="comp-value" id="c-cash">—</div>
+            <div class="comp-sub">gross at closing</div>
+          </div>
+        </div>
+
+        <!-- Info strip -->
+        <div class="info-strip">
+          <div class="info-item">
+            <strong id="i-gpp">—</strong>
+            Gross Profit %
+          </div>
+          <div class="info-item">
+            <strong id="i-notePrincipal">—</strong>
+            Note Principal
+          </div>
+          <div class="info-item">
+            <strong id="i-gainAtClose">—</strong>
+            Gain at Closing
+          </div>
+          <div class="info-item">
+            <strong id="i-taxAtClose">—</strong>
+            Tax at Closing
+          </div>
+        </div>
+
+        <!-- Year-by-year table -->
+        <div class="table-wrap">
+          <div class="table-title">
+            Year-by-Year Breakdown
+            <span>Principal × GPP = gain recognized each year</span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Principal</th>
+                  <th>Interest</th>
+                  <th>Gain Recognized</th>
+                  <th>CG Tax</th>
+                  <th>Interest Tax</th>
+                  <th>Net Received</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleBody"></tbody>
+              <tfoot id="scheduleFoot"></tfoot>
+            </table>
+          </div>
+        </div>
+
+        <p class="disclaimer">
+          This calculator models the federal installment sale method (IRS Form 6252). It does not
+          account for depreciation recapture, state-specific installment rules, dealer sales,
+          or passive activity limitations. Consult your CPA and tax attorney before structuring
+          any transaction.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- ── EXPLAINER ── -->
+    <section class="calc-explainer">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Seller Financing & the Installment Sale Method</h2>
+
+      <div class="explainer-grid">
+        <div>
+          <h3>What is seller financing?</h3>
+          <p>
+            Seller financing — also called a seller note or seller carry — is when the business
+            owner accepts part of the purchase price as a promissory note from the buyer, rather
+            than requiring all cash at closing. The buyer pays down the note (plus interest) over
+            a defined term, typically 3–10 years.
+          </p>
+          <p>
+            It's common in small- and mid-market deals where buyers need to bridge a gap in SBA
+            or conventional financing, or where sellers want to use the note to defer taxes and
+            earn a better effective return than an all-cash sale would provide.
+          </p>
+          <h3>The gross profit percentage</h3>
+          <p>
+            The IRS installment sale rules hinge on one number: the gross profit percentage (GPP).
+            It equals your total gain divided by the sale price. If you bought a business for
+            $300K and are selling for $2M, your GPP is 85%. That means 85 cents of every dollar
+            of principal you receive is taxable capital gain — in the year you receive it.
+          </p>
+        </div>
+        <div>
+          <h3>How installment sales spread the tax bill</h3>
+          <p>
+            In a traditional all-cash sale, you recognize the entire gain in the year of closing
+            and pay capital gains tax on it immediately. If your gain is $1.7M and your combined
+            rate is 23.8%, that's $404,600 due by April 15 of the following year.
+          </p>
+          <p>
+            With an installment sale, you recognize gain only as payments arrive. The 30% down
+            payment triggers 30% of the gain at closing. The remaining 70% is spread over the
+            note term. The tax you would have paid on that deferred gain stays in your pocket —
+            earning returns — until each payment arrives.
+          </p>
+          <h3>Interest income: the extra return</h3>
+          <p>
+            On top of the principal, you earn interest on the outstanding note balance each year.
+            That interest is taxed as ordinary income — not at the capital gains rate — but it
+            represents real additional return. On a $1.4M note at 7%, that's $98,000 in year one
+            alone. Over a 5-year term, the interest can meaningfully exceed what you'd earn
+            parking the equivalent cash in a savings account.
+          </p>
+        </div>
+      </div>
+
+      <div class="explainer-grid" style="margin-top:40px">
+        <div>
+          <h3>When seller financing makes sense</h3>
+          <p><strong style="color:var(--text)">High-basis sellers:</strong> If your adjusted basis is high relative to the sale price, installment deferral provides less benefit — you have less gain to spread. It works best when gain is large.</p>
+          <p><strong style="color:var(--text)">Buyers who can't get full financing:</strong> SBA 7(a) loans cap at $5M. For deals above that, or for buyers who fall short on equity, a seller note bridges the gap and keeps the deal alive.</p>
+          <p><strong style="color:var(--text)">Sellers who trust the buyer:</strong> A seller note is unsecured debt — you're a creditor, not an owner. If the buyer fails, you may not recover the balance. Only offer seller financing to buyers you've thoroughly vetted.</p>
+        </div>
+        <div>
+          <h3>Key risks to understand</h3>
+          <p><strong style="color:var(--text)">Default risk:</strong> If the buyer stops making payments, you face a collections process or foreclosure on business assets. Always secure the note against business assets and require a personal guarantee.</p>
+          <p><strong style="color:var(--text)">Re-characterization:</strong> If the note bears below-market interest, the IRS may impute interest under the applicable federal rate (AFR). Use at-market rates to avoid this.</p>
+          <p><strong style="color:var(--text)">Depreciation recapture:</strong> If the business has depreciable assets, recapture income (Section 1245/1250) is recognized in full in the year of sale — it cannot be deferred via the installment method. Your CPA should model this before you structure the deal.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="calc-cta">
+      <div class="section-label">Next Step</div>
+      <h2>Know Your Number Before You Structure the Deal</h2>
+      <p>
+        The installment sale analysis only works once you know what your business is worth.
+        Get a free, confidential valuation — takes under 3 minutes.
+      </p>
+      <a href="/valuation" class="btn btn-primary btn-lg">
+        Get My Free Valuation →
+      </a>
+    </div>
+
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>
+
+<script is:inline>
+(function () {
+  // ── Helpers ────────────────────────────────────────────────────────────
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) =>
+    n == null || isNaN(n)
+      ? '—'
+      : '$' + Math.round(n).toLocaleString('en-US');
+  const fmtPct = (n) => (n * 100).toFixed(1) + '%';
+  const parseNum = (id) => {
+    const val = $(id).value.replace(/[^0-9.]/g, '');
+    return parseFloat(val) || 0;
+  };
+
+  // ── Money input formatting ─────────────────────────────────────────────
+  ['salePrice', 'basis'].forEach((id) => {
+    $(id).addEventListener('input', function () {
+      const raw = this.value.replace(/[^0-9]/g, '');
+      this.value = raw ? parseInt(raw, 10).toLocaleString('en-US') : '';
+      recalc();
+    });
+  });
+
+  // ── All inputs trigger recalc ──────────────────────────────────────────
+  [
+    'salePrice', 'basis', 'downPct', 'noteRate', 'noteTerm',
+    'paymentType', 'ltcgRate', 'niit', 'stateRate', 'ordinaryRate',
+  ].forEach((id) => {
+    const el = $(id);
+    el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', recalc);
+  });
+
+  // ── Core calculation ───────────────────────────────────────────────────
+  function recalc() {
+    const salePrice    = parseNum('salePrice');
+    const basis        = parseNum('basis');
+    const downPct      = Math.min(100, Math.max(0, parseNum('downPct'))) / 100;
+    const noteRate     = parseNum('noteRate') / 100;
+    const noteTerm     = Math.max(1, Math.min(30, parseInt($('noteTerm').value) || 5));
+    const payType      = $('paymentType').value;
+    const ltcgRate     = parseNum('ltcgRate') / 100;
+    const niit         = $('niit').checked ? 0.038 : 0;
+    const stateRate    = parseNum('stateRate') / 100;
+    const ordinaryRate = parseNum('ordinaryRate') / 100;
+
+    if (!salePrice) { clearResults(); return; }
+
+    const totalGain      = Math.max(0, salePrice - basis);
+    const gpp            = salePrice > 0 ? totalGain / salePrice : 0;
+    const cgRate         = ltcgRate + niit + stateRate;
+    const downPayment    = salePrice * downPct;
+    const notePrincipal  = salePrice - downPayment;
+
+    // ── Closing ────────────────────────────────────────────────────────
+    const gainAtClose  = downPayment * gpp;
+    const taxAtClose   = gainAtClose * cgRate;
+    const netAtClose   = downPayment - taxAtClose;
+
+    // ── Note schedule ──────────────────────────────────────────────────
+    let schedule = [];
+
+    if (payType === 'interest-only') {
+      for (let y = 1; y <= noteTerm; y++) {
+        const interest         = notePrincipal * noteRate;
+        const principal        = y === noteTerm ? notePrincipal : 0;
+        const gainRecognized   = principal * gpp;
+        const taxOnGain        = gainRecognized * cgRate;
+        const taxOnInterest    = interest * ordinaryRate;
+        const grossReceived    = interest + principal;
+        const netReceived      = grossReceived - taxOnGain - taxOnInterest;
+        schedule.push({ year: y, interest, principal, gainRecognized, taxOnGain, taxOnInterest, grossReceived, netReceived });
+      }
+    } else {
+      // Fully amortizing
+      const monthlyRate = noteRate / 12;
+      const months      = noteTerm * 12;
+      let monthlyPmt;
+      if (monthlyRate > 0) {
+        monthlyPmt = notePrincipal * monthlyRate * Math.pow(1 + monthlyRate, months)
+                     / (Math.pow(1 + monthlyRate, months) - 1);
+      } else {
+        monthlyPmt = notePrincipal / months;
+      }
+
+      let balance = notePrincipal;
+      for (let y = 1; y <= noteTerm; y++) {
+        let yInterest = 0, yPrincipal = 0;
+        for (let m = 0; m < 12; m++) {
+          const iPayment = balance * monthlyRate;
+          const pPayment = Math.min(monthlyPmt - iPayment, balance);
+          yInterest  += iPayment;
+          yPrincipal += pPayment;
+          balance    -= pPayment;
+        }
+        const gainRecognized   = yPrincipal * gpp;
+        const taxOnGain        = gainRecognized * cgRate;
+        const taxOnInterest    = yInterest * ordinaryRate;
+        const grossReceived    = yInterest + yPrincipal;
+        const netReceived      = grossReceived - taxOnGain - taxOnInterest;
+        schedule.push({ year: y, interest: yInterest, principal: yPrincipal, gainRecognized, taxOnGain, taxOnInterest, grossReceived, netReceived });
+      }
+    }
+
+    // ── Totals ─────────────────────────────────────────────────────────
+    const totInterest     = schedule.reduce((s, r) => s + r.interest, 0);
+    const totPrincipal    = schedule.reduce((s, r) => s + r.principal, 0);
+    const totGainNote     = schedule.reduce((s, r) => s + r.gainRecognized, 0);
+    const totCGTaxNote    = schedule.reduce((s, r) => s + r.taxOnGain, 0);
+    const totIntTax       = schedule.reduce((s, r) => s + r.taxOnInterest, 0);
+    const totGrossReceived = downPayment + totInterest + totPrincipal;
+    const totNetReceived   = netAtClose + schedule.reduce((s, r) => s + r.netReceived, 0);
+    const totTax           = taxAtClose + totCGTaxNote + totIntTax;
+
+    // ── All-cash comparison ────────────────────────────────────────────
+    const allCashCGTax  = totalGain * cgRate;
+    const allCashNet    = salePrice - allCashCGTax;
+
+    // ── Tax deferral ───────────────────────────────────────────────────
+    const taxDeferred = allCashCGTax - taxAtClose - totCGTaxNote;
+
+    // ── Render ─────────────────────────────────────────────────────────
+    $('m-netInstallment').textContent     = fmt(totNetReceived);
+    $('m-netInstallmentSub').textContent  = `over ${noteTerm}-year note term`;
+    $('m-netCash').textContent            = fmt(allCashNet);
+    $('m-totalInterest').textContent      = fmt(totInterest);
+    $('m-totalInterestSub').textContent   = `over ${noteTerm}-year note term`;
+    $('m-taxDeferred').textContent        = fmt(Math.max(0, taxDeferred));
+
+    $('c-installment').textContent        = fmt(totGrossReceived);
+    $('c-cash').textContent               = fmt(salePrice);
+    const delta = totGrossReceived - salePrice;
+    const deltaEl = $('c-delta');
+    deltaEl.textContent = (delta >= 0 ? '+' : '') + fmt(delta) + ' gross';
+    deltaEl.className   = 'comp-delta ' + (delta >= 0 ? 'positive' : 'negative');
+
+    $('i-gpp').textContent         = fmtPct(gpp);
+    $('i-notePrincipal').textContent = fmt(notePrincipal);
+    $('i-gainAtClose').textContent  = fmt(gainAtClose);
+    $('i-taxAtClose').textContent   = fmt(taxAtClose);
+
+    // Table body
+    const tbody = $('scheduleBody');
+    tbody.innerHTML = '';
+
+    // Closing row
+    const cr = document.createElement('tr');
+    cr.className = 'closing-row';
+    cr.innerHTML = `
+      <td>Closing</td>
+      <td>${fmt(downPayment)}</td>
+      <td>—</td>
+      <td class="gain">${fmt(gainAtClose)}</td>
+      <td class="tax">${fmt(taxAtClose)}</td>
+      <td>—</td>
+      <td>${fmt(netAtClose)}</td>`;
+    tbody.appendChild(cr);
+
+    schedule.forEach((row) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>Year ${row.year}</td>
+        <td>${fmt(row.principal)}</td>
+        <td>${fmt(row.interest)}</td>
+        <td class="gain">${fmt(row.gainRecognized)}</td>
+        <td class="tax">${fmt(row.taxOnGain)}</td>
+        <td class="tax">${fmt(row.taxOnInterest)}</td>
+        <td>${fmt(row.netReceived)}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // Totals footer
+    const tfoot = $('scheduleFoot');
+    tfoot.innerHTML = `
+      <tr>
+        <td>Total</td>
+        <td>${fmt(downPayment + totPrincipal)}</td>
+        <td>${fmt(totInterest)}</td>
+        <td class="gain">${fmt(gainAtClose + totGainNote)}</td>
+        <td class="tax">${fmt(taxAtClose + totCGTaxNote)}</td>
+        <td class="tax">${fmt(totIntTax)}</td>
+        <td>${fmt(totNetReceived)}</td>
+      </tr>`;
+  }
+
+  function clearResults() {
+    ['m-netInstallment','m-netCash','m-totalInterest','m-taxDeferred',
+     'c-installment','c-cash','i-gpp','i-notePrincipal','i-gainAtClose','i-taxAtClose'
+    ].forEach((id) => { $(id).textContent = '—'; });
+    $('c-delta').textContent = '—';
+    $('scheduleBody').innerHTML = '';
+    $('scheduleFoot').innerHTML = '';
+  }
+
+  // Initial render
+  recalc();
+})();
+</script>

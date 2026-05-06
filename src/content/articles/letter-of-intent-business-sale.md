@@ -55,6 +55,8 @@ How and when you get paid is often more important than the headline number.
 
 A $5M deal that's 60% cash, 20% seller note, 20% earnout is very different from a $5M deal that's 100% cash at close — even though the headline numbers match.
 
+A seller note also has tax implications worth modeling before you accept or reject one: the IRS installment sale method lets you spread capital gains recognition over the note term rather than paying it all at closing, which can meaningfully improve your net after-tax return. Use the [Seller Financing Calculator](/seller-financing-calculator) to run your specific numbers before structuring this in the LOI.
+
 ### 3. Working capital target
 
 This is where sellers most often lose money they didn't expect to lose. The buyer expects a "normal" level of working capital to come with the business. If your actual closing working capital is below that level, your purchase price is reduced dollar-for-dollar.

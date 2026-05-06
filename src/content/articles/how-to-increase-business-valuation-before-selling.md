@@ -167,3 +167,5 @@ That's a $1M difference from 18 months of intentional work — most of which doe
 5. Re-baseline at 12 months — multiple movement is real and measurable.
 
 A [free valuation](/valuation) gives you the starting number to plan against. Without it, you're guessing whether the work is paying off.
+
+And when you're evaluating deal structure at closing, don't overlook seller financing: accepting a seller note can spread your capital gains tax over multiple years under the IRS installment sale method, improving your net after-tax return even without changing the headline price. The [Seller Financing Calculator](/seller-financing-calculator) lets you model any note structure against an all-cash sale in real time.
