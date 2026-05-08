@@ -1,0 +1,294 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
+import '../../styles/hub.css';
+
+const title = 'AI and Technology Systems That Increase Business Valuation (2026)';
+const description =
+  'How the right technology systems — email automation, AI receptionists, review management, and recurring revenue — reduce owner dependence, build defensible revenue, and command higher multiples at exit. Written by a broker who has installed these systems in dozens of businesses.';
+
+const stepOrder: Record<string, number> = {
+  'how-technology-increases-business-valuation': 1,
+  'email-marketing-automation-customer-retention': 2,
+  'ai-voice-receptionist-business': 3,
+  'automated-review-requests-business': 4,
+  'membership-portal-recurring-revenue-valuation': 5,
+};
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'tech-valuation')
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
+
+const pageUrl = 'https://sellyourbusiness.com/technology-valuation';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'Technology & Valuation', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'AI and Technology Systems That Increase Business Valuation',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How does technology increase business valuation?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Technology systems increase business valuation by addressing the two biggest multiple killers: owner dependence and unpredictable revenue. When lead capture, customer retention, reputation management, and repeat revenue run on documented systems instead of the owner\'s effort, buyers can model the business continuing after the sale — which is what they pay a premium for.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What technology systems have the biggest impact on exit multiple?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'The highest-impact systems are: (1) recurring revenue programs like service agreements or membership portals — these directly raise the multiple buyers apply; (2) AI voice receptionists that capture and convert leads 24/7 without owner involvement; (3) automated email retention sequences that generate documented repeat revenue; and (4) review management systems that build a defensible reputation over time.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How far in advance should I install technology systems before selling?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            '18 to 24 months is the minimum needed to accumulate meaningful performance data. Buyers pay for evidence that systems work — not for recently-installed tools. Six months of email retention data, twelve months of AI receptionist call logs, or two years of review volume growth are the kinds of documented proof that move multiples. Start as early as possible.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do technology systems work for small businesses, not just large ones?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Yes — and the impact is often greater for small businesses. A 5-person HVAC company with an AI receptionist, an automated review system, a customer return email sequence, and a maintenance plan membership is materially more valuable than an identical company without them. The systems do work that would otherwise fall on the owner, which is exactly what buyers look for.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap: Record<string, { step: number; label: string }> = {
+  'how-technology-increases-business-valuation': { step: 1, label: 'Overview' },
+  'email-marketing-automation-customer-retention': { step: 2, label: 'Email Retention' },
+  'ai-voice-receptionist-business': { step: 3, label: 'AI Receptionist' },
+  'automated-review-requests-business': { step: 4, label: 'Review Systems' },
+  'membership-portal-recurring-revenue-valuation': { step: 5, label: 'Recurring Revenue' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">Technology &amp; Valuation</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">Complete Guide</div>
+      <h1>AI &amp; Technology Systems That Increase Business Valuation</h1>
+      <p class="lede">
+        The businesses that sell for the highest multiples share one trait: they run without
+        their owner. The right technology systems remove you from the equation — and document
+        that fact for buyers. Written by a broker who has installed these systems in dozens
+        of businesses across multiple industries.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        Technology systems increase business valuation by addressing the two biggest multiple
+        killers: owner dependence and unpredictable revenue. Email automation, AI voice
+        receptionists, review management, and membership programs each reduce the business's
+        reliance on any single person while making revenue more predictable and defensible.
+        Buyers pay 1x–2x higher multiples for businesses that demonstrably run on systems,
+        not personalities — but the data only exists if the systems have been running for
+        18–24 months before listing.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>Why technology is the most direct path to a higher multiple</h2>
+      <p>
+        Most business owners think about valuation in terms of revenue and profit. Buyers think
+        about it in terms of risk. The question a buyer asks — consciously or not — is: <em>will
+        this business produce the same results after I buy it?</em> Every system that captures
+        leads, retains customers, manages reputation, and generates recurring revenue is evidence
+        that the answer is yes.
+      </p>
+      <p>
+        The articles in this guide cover the four most impactful technology systems for small
+        business valuation: automated customer retention, AI-powered lead capture, reputation
+        management, and recurring revenue programs. Each one has a direct relationship to how
+        buyers calculate risk — and therefore how they set the multiple. These pages complement
+        our <a href="/business-valuation">business valuation guide</a> and
+        <a href="/how-to-sell-a-business">complete guide to selling a business</a>.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>The five technology topics covered in this guide</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/technology-valuation/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/technology-valuation/${a.slug}`} class="read-more">Read this guide →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Talk to a broker who has installed these systems</h2>
+      <p>
+        John Matsis has set up AI receptionists, email automation, review management, and
+        recurring revenue programs across dozens of businesses. If you're planning a sale in
+        the next one to five years, a 20-minute conversation is enough to identify which two
+        or three systems would have the most impact on your specific situation.
+      </p>
+      <div class="hub-cta-actions">
+        <a href="tel:2126780100" class="btn btn-primary btn-lg">Call (212) 678-0100</a>
+        <a href="mailto:john.matsis@hedgestone.com" class="btn btn-outline">Send an Email</a>
+      </div>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>How does technology increase business valuation?</summary>
+          <p>
+            Technology systems increase valuation by reducing owner dependence and making revenue
+            more predictable. When lead capture, customer retention, and reputation management run
+            on documented systems instead of the owner's effort, buyers can model the business
+            continuing after the sale — which is what they pay a premium multiple for.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What technology systems have the biggest impact on exit multiple?</summary>
+          <p>
+            In order of impact: (1) recurring revenue programs like service agreements or
+            membership portals — these directly raise the multiple buyers apply; (2) AI voice
+            receptionists that capture and convert leads 24/7; (3) automated email retention
+            sequences that generate documented repeat revenue; and (4) review management systems
+            that build a defensible online reputation over time.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How far in advance should I install these systems before selling?</summary>
+          <p>
+            18 to 24 months is ideal. Buyers pay for evidence that systems work — not for
+            recently-installed tools. Six months of email retention data, a year of AI receptionist
+            call logs, or two years of consistent review volume are the kinds of documented proof
+            that move multiples. A system installed last week has no data to show.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Do these systems work for small businesses?</summary>
+          <p>
+            Yes — the impact is often greater for smaller businesses. A 5-person HVAC company with
+            an AI receptionist, an automated review system, a customer email sequence, and a
+            maintenance plan membership is materially more valuable than an identical company
+            without them. The systems replace work that would otherwise fall on the owner.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors. Beyond
+          traditional brokerage, he has hands-on experience installing AI and automation systems
+          in businesses across retail, home services, healthcare, professional services, and more.
+          He advises sellers on which systems to prioritize based on their specific business model
+          and sale timeline — and has seen firsthand how the right technology investments translate
+          to higher multiples at exit.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>
+
+<style>
+  .hub-cta-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+</style>

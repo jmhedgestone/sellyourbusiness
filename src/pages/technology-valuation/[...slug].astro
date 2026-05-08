@@ -3,7 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
 export async function getStaticPaths() {
-  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'confidential-sale');
+  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'tech-valuation');
   return all.map((a) => ({
     params: { slug: a.slug },
     props: { entry: a },
@@ -25,7 +25,7 @@ if (entry.data.relatedArticles) {
   for (const slug of entry.data.relatedArticles) {
     const rel = await getEntry('articles', slug);
     if (rel) {
-      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/confidential-sale';
+      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/technology-valuation';
       related.push({
         title: rel.data.title,
         description: rel.data.description,
@@ -43,9 +43,9 @@ if (entry.data.relatedArticles) {
   publishDate={entry.data.publishDate}
   updatedDate={entry.data.updatedDate}
   author={entry.data.author}
-  pillar="confidential-sale"
-  pillarTitle="Confidential Sale"
-  pillarHref="/confidential-sale"
+  pillar="tech-valuation"
+  pillarTitle="Technology & Valuation"
+  pillarHref="/technology-valuation"
   slug={entry.slug}
   faqs={entry.data.faqs}
   relatedArticles={related}
