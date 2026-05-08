@@ -188,6 +188,12 @@
   max-width: 560px;
   margin: 0 auto 24px;
 }
+.hub-cta-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
 .hub-faqs { margin-top: 72px; }
 .hub-faqs h2 {
