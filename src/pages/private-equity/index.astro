@@ -1,0 +1,291 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
+import '../../styles/hub.css';
+
+const title = 'Selling to Private Equity: The Roll-Up Playbook for Small Business Owners (2026)';
+const description =
+  'How private equity firms buy small businesses, what they look for, how roll-up acquisitions work in home services and other industries, and how to position your business for a PE exit — with access to active buyers. Written by a broker with direct PE relationships.';
+
+const stepOrder: Record<string, number> = {
+  'how-private-equity-buys-small-businesses': 1,
+  'private-equity-rollup-home-services': 2,
+  'what-private-equity-looks-for-in-acquisition': 3,
+  'private-equity-deal-structure-earnouts-equity-rollover': 4,
+  'how-to-sell-business-to-private-equity': 5,
+};
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'pe-buyers')
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
+
+const pageUrl = 'https://sellyourbusiness.com/private-equity';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'Selling to Private Equity', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'Private Equity Acquisitions — The Complete Guide for Sellers',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is a private equity roll-up?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'A roll-up is a PE acquisition strategy where a firm buys a platform company in a fragmented industry, then systematically acquires smaller businesses and integrates them under centralized management and technology. The combined entity sells at a much higher multiple than any individual business would command — typically 10x–14x EBITDA vs. 3x–5x SDE for individual add-ons.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Why do PE firms pay more than individual buyers?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'PE firms are pricing the synergies and scale they will create, not just the standalone earnings. They know that a $1.5M SDE HVAC company that joins a regional platform will eventually be valued at a much higher multiple. They can afford to pay a premium on entry because the math works at exit. Individual buyers pay for the business as it is; PE firms pay for what it becomes.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is rollover equity and the second bite of the apple?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            "Rollover equity is when a seller reinvests 10–30% of their sale proceeds into the PE platform instead of taking all cash at close. If the platform exits in 4–7 years at a higher multiple, the seller's retained stake generates a second significant payout — often called the 'second bite of the apple.' On a well-structured deal with a strong platform, the second bite can equal or exceed the original cash received.",
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do I get my business in front of PE buyers?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'PE deal flow comes from relationships, not listing platforms. Working with a broker who has direct relationships with active PE acquirers in your industry is the most reliable path to accessing these buyers. Cold outreach from sellers rarely advances. The broker relationship determines which buyers see your deal — and PE buyers are accessed through relationships, not platforms.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap: Record<string, { step: number; label: string }> = {
+  'how-private-equity-buys-small-businesses': { step: 1, label: 'The Playbook' },
+  'private-equity-rollup-home-services': { step: 2, label: 'Home Services' },
+  'what-private-equity-looks-for-in-acquisition': { step: 3, label: 'PE Criteria' },
+  'private-equity-deal-structure-earnouts-equity-rollover': { step: 4, label: 'Deal Structure' },
+  'how-to-sell-business-to-private-equity': { step: 5, label: 'Getting the Deal Done' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">Selling to Private Equity</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">Complete Guide</div>
+      <h1>Selling to Private Equity</h1>
+      <p class="lede">
+        Private equity firms are the most active — and often the highest-paying — buyers in
+        home services, healthcare, professional services, and dozens of other industries today.
+        Understanding how they buy, what they screen for, and how to get your business in front
+        of the right firms is what this guide covers. Written by a broker with direct PE
+        relationships across multiple industries.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        Private equity firms buy small businesses using a platform-and-add-on roll-up strategy —
+        acquiring multiple companies in the same industry, integrating them under centralized
+        management and technology, and selling the combined entity at a significantly higher
+        multiple. For sellers in the right industries, this means premiums of 1x–3x above what
+        a traditional buyer would pay, the option to retain equity for a second payout, and a
+        faster, more structured process than a traditional sale. The catch: PE deal flow comes
+        from relationships, not listing sites.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>Why private equity has changed the small business acquisition market</h2>
+      <p>
+        Twenty years ago, the most likely buyer for a $2M SDE home services company was
+        another operator or an individual entrepreneur. Today, it's increasingly a private
+        equity firm executing a regional roll-up thesis. In home services alone, dozens of
+        PE-backed platforms are actively acquiring in virtually every major US market.
+      </p>
+      <p>
+        For sellers, this is a meaningful opportunity — but only for those who understand how
+        PE buyers think, what they screen for, and how deals actually get done. This guide
+        covers the complete picture: the PE acquisition model, the specific roll-up activity
+        in home services, what PE firms look for in due diligence, how these deals are structured
+        differently from traditional sales, and how to position your business and get it in front
+        of the right buyers. These pages complement our <a href="/business-valuation">business
+        valuation guide</a> and <a href="/how-to-sell-a-business">complete selling guide</a>.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>Five topics every seller needs to understand</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/private-equity/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/private-equity/${a.slug}`} class="read-more">Read this guide →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Talk to a broker with active PE relationships</h2>
+      <p>
+        PE deal flow doesn't come from listing sites — it comes from relationships. John Matsis
+        maintains direct relationships with private equity firms and family offices acquiring
+        across home services, healthcare, professional services, and other industries. If your
+        business might be a fit for a PE exit strategy, a 20-minute conversation is the
+        fastest way to find out.
+      </p>
+      <div class="hub-cta-actions">
+        <a href="tel:2126780100" class="btn btn-primary btn-lg">Call (212) 678-0100</a>
+        <a href="mailto:john.matsis@hedgestone.com" class="btn btn-outline">Send an Email</a>
+      </div>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>What is a private equity roll-up?</summary>
+          <p>
+            A roll-up is a PE strategy of buying multiple businesses in the same industry,
+            integrating them under centralized management and technology, and selling the combined
+            entity at a higher multiple. Individual businesses sell at 3x–5x SDE; the combined
+            platform sells at 10x–14x EBITDA. The spread between entry and exit multiples is where
+            PE generates its returns — and where sellers in the right industries get premium prices.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Why do PE firms pay more than individual buyers?</summary>
+          <p>
+            PE firms are pricing future synergies and scale, not just standalone earnings. They
+            know that your $1.5M SDE business, integrated into a $25M EBITDA platform, will be
+            valued very differently at exit. They can pay a premium on entry because the math works
+            at exit. Individual buyers pay for the business as it is. PE firms pay for what it
+            becomes as part of a larger platform.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What is rollover equity and the second bite of the apple?</summary>
+          <p>
+            Rollover equity is when you reinvest 10–30% of your sale proceeds into the PE platform
+            instead of taking all cash at close. If the platform exits in 4–7 years at a higher
+            multiple, your retained stake generates a second payout — sometimes larger than the
+            original cash received. This "second bite" is one of the most important financial
+            decisions in a PE deal and requires careful evaluation of the PE firm's track record.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How do I get my business in front of PE buyers?</summary>
+          <p>
+            PE deal flow comes from relationships, not listing platforms. Working with a broker
+            who has direct relationships with active PE acquirers in your industry is the most
+            reliable path. Cold outreach from sellers rarely advances past an initial form
+            response. The broker you choose determines which buyers see your deal — and PE deals
+            are sourced through trusted relationships, not public channels.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors with
+          direct relationships at private equity firms and family offices actively acquiring
+          across home services, healthcare, professional services, and other industries. He has
+          been on both sides of PE transactions — as an advisor to sellers and through direct
+          relationships with the platforms doing the acquiring. He advises owners on whether
+          their business is positioned for a PE exit and, where it isn't, what to build to
+          get there.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>

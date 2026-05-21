@@ -3,7 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
 export async function getStaticPaths() {
-  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'how-to-sell');
+  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'pe-buyers');
   return all.map((a) => ({
     params: { slug: a.slug },
     props: { entry: a },
@@ -13,8 +13,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// Resolve relatedArticles (slugs) → full hrefs. Cross-pillar related links
-// route to the referenced article's pillar prefix.
 const PILLAR_PREFIX = {
   'how-to-sell': '/how-to-sell-a-business',
   'valuation': '/business-valuation',
@@ -28,7 +26,7 @@ if (entry.data.relatedArticles) {
   for (const slug of entry.data.relatedArticles) {
     const rel = await getEntry('articles', slug);
     if (rel) {
-      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/how-to-sell-a-business';
+      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/private-equity';
       related.push({
         title: rel.data.title,
         description: rel.data.description,
@@ -46,9 +44,9 @@ if (entry.data.relatedArticles) {
   publishDate={entry.data.publishDate}
   updatedDate={entry.data.updatedDate}
   author={entry.data.author}
-  pillar="how-to-sell"
-  pillarTitle="How to Sell a Business"
-  pillarHref="/how-to-sell-a-business"
+  pillar="pe-buyers"
+  pillarTitle="Selling to Private Equity"
+  pillarHref="/private-equity"
   slug={entry.slug}
   faqs={entry.data.faqs}
   relatedArticles={related}
