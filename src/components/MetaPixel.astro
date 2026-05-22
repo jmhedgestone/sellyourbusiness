@@ -3,7 +3,7 @@
 // Fires PageView on every page load. The Pixel ID is read from PUBLIC_META_PIXEL_ID
 // at build time; if unset, the component renders nothing so dev/test environments
 // don't spam the production pixel.
-const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
+const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID?.trim();
 ---
 
 {pixelId && (
