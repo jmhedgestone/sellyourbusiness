@@ -1,0 +1,57 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'real-estate');
+  return all.map((a) => ({
+    params: { slug: a.slug },
+    props: { entry: a },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const PILLAR_PREFIX = {
+  'how-to-sell': '/how-to-sell-a-business',
+  'valuation': '/business-valuation',
+  'confidential-sale': '/confidential-sale',
+  'tech-valuation': '/technology-valuation',
+  'pe-buyers': '/private-equity',
+  'real-estate': '/real-estate',
+};
+
+const related = [];
+if (entry.data.relatedArticles) {
+  for (const slug of entry.data.relatedArticles) {
+    const rel = await getEntry('articles', slug);
+    if (rel) {
+      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/real-estate';
+      related.push({
+        title: rel.data.title,
+        description: rel.data.description,
+        href: `${prefix}/${rel.slug}`,
+      });
+    }
+  }
+}
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  answer={entry.data.answer}
+  publishDate={entry.data.publishDate}
+  updatedDate={entry.data.updatedDate}
+  author={entry.data.author}
+  pillar="real-estate"
+  pillarTitle="Business Real Estate"
+  pillarHref="/real-estate"
+  slug={entry.slug}
+  faqs={entry.data.faqs}
+  relatedArticles={related}
+  ogImage={entry.data.ogImage}
+>
+  <Content />
+</ArticleLayout>
