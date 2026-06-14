@@ -1,0 +1,292 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
+import '../../styles/hub.css';
+
+const title = 'Selling a Business With Real Estate: Leases, Property Value, and Lasting Income (2026)';
+const description =
+  'If you lease or own the space your business operates from, the real estate can make or break your sale. How lease assignments and landlord consent work, how to value the property and the business separately, when to keep the building for income, and how seller financing, sale-leasebacks, and 1031 exchanges fit in — written by a broker who is also an investment property specialist.';
+
+const stepOrder: Record<string, number> = {
+  'lease-assignment-landlord-consent-business-sale': 1,
+  'valuing-business-and-real-estate-separately': 2,
+  'sell-business-keep-the-building': 3,
+  'seller-financing-real-estate-business-sale': 4,
+  'sale-leaseback-1031-exchange-business-owners': 5,
+};
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'real-estate')
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
+
+const pageUrl = 'https://sellyourbusiness.com/real-estate';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'Business Real Estate', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'Selling a Business With Real Estate — The Complete Guide for Owners',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Do I have to sell my building if I sell my business?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'No. If you own the real estate, keeping the building and leasing it to the buyer is one of the most common and profitable options. You sell the operating business, sign a lease with the new owner — often a triple-net lease — and keep an appreciating asset that pays you monthly income. Selling both together, or selling them to two separate buyers, are also valid paths depending on your goals.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can my landlord block the sale of my business?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'If you lease your space, almost every commercial lease requires the landlord to consent before you assign the lease to a buyer. Most leases say consent cannot be unreasonably withheld for a qualified buyer, but the landlord still has to approve the transfer. Starting early and presenting a financially strong buyer is the key to getting consent without losing the deal.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Should the business and the real estate be valued separately?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Yes. A business is valued on its earnings (a multiple of SDE or EBITDA), while real estate is valued independently on income and comparable sales (a capitalization rate or appraisal). They attract different buyers and are governed by different math. Valuing them separately — and normalizing the rent to a market figure — usually produces a higher, more defensible total than lumping them into one number.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How can selling a business with real estate create income for years afterward?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'By keeping the building and becoming the new operator’s landlord. A long-term lease — ideally triple-net, where the tenant pays taxes, insurance, and maintenance — turns a one-time sale into a durable, inflation-protected income stream, while the property continues to appreciate and can be sold or 1031-exchanged later for a second payday.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap: Record<string, { step: number; label: string }> = {
+  'lease-assignment-landlord-consent-business-sale': { step: 1, label: 'Leases & Consent' },
+  'valuing-business-and-real-estate-separately': { step: 2, label: 'Valuing Separately' },
+  'sell-business-keep-the-building': { step: 3, label: 'Keep the Building' },
+  'seller-financing-real-estate-business-sale': { step: 4, label: 'Seller Financing' },
+  'sale-leaseback-1031-exchange-business-owners': { step: 5, label: 'Tax Strategy' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">Business Real Estate</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">Complete Guide</div>
+      <h1>Selling a Business With Real Estate</h1>
+      <p class="lede">
+        The premises your business runs from — whether you lease it or own it — is one of the most
+        valuable and most misunderstood parts of your sale. Get it right and it raises your price,
+        smooths the deal, and can pay you for years after closing. This guide covers lease
+        assignments and landlord consent, valuing the property and the business separately, keeping
+        the building for income, and the financing and tax structures that make it all work. Written
+        by a broker who is also an investment property specialist.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        When a business comes with real estate, you are really selling two assets — and you have
+        options. If you lease, the deal depends on assigning your lease with the landlord’s consent.
+        If you own, value the business (a multiple of earnings) and the property (a cap rate or
+        appraisal) separately, then choose how to sell: both together, the business while you keep
+        the building as a landlord for ongoing income, or each to a different buyer. Seller
+        financing, sale-leasebacks, and 1031 exchanges can raise your price and stretch your
+        proceeds — but the moves that pay off most are the ones planned before you go to market.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>Why real estate changes everything about a business sale</h2>
+      <p>
+        Most owners think about their sale in terms of one number: what is the business worth? But
+        if you operate out of a building you lease or own, the property quietly drives the outcome.
+        A lease with too little term left can scare off buyers and their lenders. A building you own
+        can be the difference between a clean exit and a retirement income stream that lasts decades.
+      </p>
+      <p>
+        The owners who do best are the ones who treat the real estate as a deliberate decision rather
+        than an afterthought. This guide walks through that decision in five parts: securing your
+        lease and landlord consent, valuing the business and the property as the separate assets they
+        are, deciding whether to keep the building and lease it back to the buyer, using seller
+        financing on either asset, and the tax structures — sale-leasebacks and 1031 exchanges — that
+        protect your proceeds. These pages complement our <a href="/business-valuation">business
+        valuation guide</a> and our <a href="/how-to-sell-a-business">complete guide to selling a
+        business</a>.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>Five things every owner with real estate needs to understand</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/real-estate/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/real-estate/${a.slug}`} class="read-more">Read this guide →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Talk to a broker who handles the business and the building</h2>
+      <p>
+        Most business brokers don’t do real estate, and most commercial real estate agents don’t do
+        businesses. John Matsis is a Business &amp; Investment Property Broker — he handles both
+        sides of a deal where the company and the property are intertwined, so the lease, the
+        valuation split, and the structure all work together rather than against each other. A
+        20-minute conversation is the fastest way to see what your options are worth.
+      </p>
+      <div class="hub-cta-actions">
+        <a href="tel:2126780100" class="btn btn-primary btn-lg">Call (212) 678-0100</a>
+        <a href="mailto:john.matsis@hedgestone.com" class="btn btn-outline">Send an Email</a>
+      </div>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Do I have to sell my building if I sell my business?</summary>
+          <p>
+            No. If you own the real estate, keeping the building and leasing it to the buyer is one
+            of the most common and profitable options — you sell the operating business and become
+            the new owner’s landlord, collecting rent on an asset that keeps appreciating. Selling
+            both together, or selling them to two separate buyers, are also valid paths depending on
+            your goals and the property.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Can my landlord block the sale of my business?</summary>
+          <p>
+            If you lease, nearly every commercial lease requires the landlord to consent before you
+            assign the lease to a buyer. Most leases say that consent can’t be unreasonably withheld
+            for a qualified buyer, but the landlord still has to approve the transfer. The key is
+            starting early and presenting a financially strong, credible buyer so consent is
+            straightforward rather than a fight.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Should the business and the real estate be valued separately?</summary>
+          <p>
+            Yes. The business is valued on its earnings — a multiple of SDE or EBITDA — while the
+            real estate is valued independently on income and comparable sales, via a capitalization
+            rate or an appraisal. They attract different buyers and follow different math. Valuing
+            them separately, and setting a market rent so the business’s earnings are accurate, almost
+            always produces a higher and more defensible total.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How can this create income for years after I sell?</summary>
+          <p>
+            By keeping the building and becoming the new operator’s landlord. A long-term lease —
+            ideally triple-net, where the tenant covers taxes, insurance, and maintenance — turns a
+            one-time payout into a durable, inflation-protected income stream. The property keeps
+            appreciating, and you can sell it or roll it into another property through a 1031 exchange
+            later for a second payday.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors with
+          hands-on experience building, acquiring, exiting, and investing in both businesses and
+          real estate. That dual focus matters when a sale involves a lease or a building: he
+          advises owners on assigning leases and winning landlord consent, on valuing the company
+          and the property separately, and on whether to sell the real estate, hold it for income,
+          or structure seller financing — so the two halves of the deal reinforce each other.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>
