@@ -3,7 +3,10 @@ import { getCollection, getEntry } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
 export async function getStaticPaths() {
-  const all = await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'tech-valuation');
+  const all = await getCollection(
+    'articles',
+    (a) => !a.data.draft && a.data.pillar === 'quality-of-earnings'
+  );
   return all.map((a) => ({
     params: { slug: a.slug },
     props: { entry: a },
@@ -13,6 +16,9 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
+// Resolve relatedArticles (slugs) to full hrefs. Articles can cross-pillar
+// link — if the resolved entry's pillar isn't `quality-of-earnings`, we route
+// it to the correct pillar's URL prefix.
 const PILLAR_PREFIX = {
   'how-to-sell': '/how-to-sell-a-business',
   'valuation': '/business-valuation',
@@ -28,7 +34,7 @@ if (entry.data.relatedArticles) {
   for (const slug of entry.data.relatedArticles) {
     const rel = await getEntry('articles', slug);
     if (rel) {
-      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/technology-valuation';
+      const prefix = PILLAR_PREFIX[rel.data.pillar] || '/quality-of-earnings';
       related.push({
         title: rel.data.title,
         description: rel.data.description,
@@ -46,9 +52,9 @@ if (entry.data.relatedArticles) {
   publishDate={entry.data.publishDate}
   updatedDate={entry.data.updatedDate}
   author={entry.data.author}
-  pillar="tech-valuation"
-  pillarTitle="Technology & Valuation"
-  pillarHref="/technology-valuation"
+  pillar="quality-of-earnings"
+  pillarTitle="Quality of Earnings"
+  pillarHref="/quality-of-earnings"
   slug={entry.slug}
   faqs={entry.data.faqs}
   relatedArticles={related}

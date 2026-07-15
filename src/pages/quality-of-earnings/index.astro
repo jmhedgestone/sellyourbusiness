@@ -1,0 +1,294 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ScrollDepth from '../../components/ScrollDepth.astro';
+import '../../styles/hub.css';
+
+const title = 'Quality of Earnings: How Buyers Verify Your Numbers — and How to Prove Yours (2026)';
+const description =
+  'A buyer does not pay for the earnings you report — they pay for the earnings you can prove. How Quality of Earnings (QofE) reviews work, how normalized EBITDA is actually calculated, how to defend your add-backs in due diligence, why unreported cash cannot be sold, and how to get your books diligence-ready before you go to market.';
+
+const stepOrder: Record<string, number> = {
+  'quality-of-earnings-report-explained': 1,
+  'normalized-adjusted-ebitda': 2,
+  'defending-add-backs-due-diligence': 3,
+  'selling-a-cash-heavy-business': 4,
+  'clean-books-diligence-ready-before-selling': 5,
+};
+
+const articles = (
+  await getCollection('articles', (a) => !a.data.draft && a.data.pillar === 'quality-of-earnings')
+).sort((a, b) => (stepOrder[a.slug] ?? 99) - (stepOrder[b.slug] ?? 99));
+
+const pageUrl = 'https://sellyourbusiness.com/quality-of-earnings';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    author: {
+      '@type': 'Person',
+      name: 'John Matsis',
+      jobTitle: 'Business & Investment Property Broker and Principal',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'HedgeStone Business Advisors',
+        url: 'https://www.hedgestone.com',
+      },
+      url: 'https://sellyourbusiness.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HedgeStone Business Advisors',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.hedgestone.com/wp-content/uploads/2022/07/HedgeStone-logo-sh.svg',
+      },
+    },
+    mainEntityOfPage: pageUrl,
+    image: 'https://sellyourbusiness.com/assets/john-matsis.jpg',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://sellyourbusiness.com' },
+      { '@type': 'ListItem', position: 2, name: 'Quality of Earnings', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    name: 'Quality of Earnings — Proving Your Numbers Before and During a Sale',
+    itemListElement: articles.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${pageUrl}/${a.slug}`,
+      name: a.data.title,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is a Quality of Earnings (QofE) report?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'A Quality of Earnings report is an independent accounting analysis that tests whether a business’s reported earnings are real, recurring, and sustainable. It is not an audit. Instead of opining on the financial statements, it digs into revenue recognition, margin trends, customer concentration, working capital, related-party dealings, and every proposed add-back — separating durable earnings from one-time or unsupportable items. Buyers commission one during due diligence; sellers increasingly commission their own before going to market.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the difference between a Quality of Earnings report and an audit?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'An audit gives an opinion on whether financial statements are fairly presented under accounting standards, looking backward at a fiscal year. A QofE asks a different question: what are the true, ongoing earnings a buyer is actually purchasing? It focuses on normalization and sustainability rather than compliance, typically covers a trailing twelve-month period, and drills into add-backs and working capital. An audited company can still get a rough QofE.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I get paid for unreported cash income when I sell my business?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Realistically, no. Buyers pay for earnings they can verify, lenders underwrite from tax returns and financial statements, and a QofE ties revenue to deposits and filings. Income that was never reported cannot be proven, so it carries no value in a sale — and claiming it tells a buyer you underreported your taxes. The legitimate path is to begin reporting all income two to three years before you sell, so the earnings appear in the returns a buyer and lender will rely on.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is normalized or adjusted EBITDA?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text:
+            'Normalized (adjusted) EBITDA restates earnings to reflect what the business would produce under a typical owner. Starting from EBITDA, you adjust owner compensation to a market-rate manager’s wage, restate related-party rent to market, remove genuinely non-recurring items, strip out personal and non-operating expenses, and correct accounting distortions such as cash-basis timing. The result — multiplied by a market multiple — is what drives enterprise value, which is why every adjustment gets tested.',
+        },
+      },
+    ],
+  },
+];
+
+const stepMap: Record<string, { step: number; label: string }> = {
+  'quality-of-earnings-report-explained': { step: 1, label: 'The QofE Report' },
+  'normalized-adjusted-ebitda': { step: 2, label: 'Normalized EBITDA' },
+  'defending-add-backs-due-diligence': { step: 3, label: 'Defending Add-Backs' },
+  'selling-a-cash-heavy-business': { step: 4, label: 'Cash-Heavy Businesses' },
+  'clean-books-diligence-ready-before-selling': { step: 5, label: 'Clean Books' },
+};
+---
+
+<BaseLayout title={`${title} | SellYourBusiness.com`} description={description} schema={schema}>
+  <Nav variant="legal" />
+
+  <div class="hub-wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span class="current">Quality of Earnings</span>
+    </nav>
+
+    <header class="hub-header">
+      <div class="eyebrow">Complete Guide</div>
+      <h1>Quality of Earnings</h1>
+      <p class="lede">
+        A buyer does not pay for the earnings you report. They pay for the earnings you can
+        <em>prove</em>. That gap — between the number on your P&amp;L and the number that survives a
+        buyer's accountant — is where deals get repriced, delayed, or lost. This guide covers how
+        Quality of Earnings reviews work, how adjusted EBITDA is really calculated, how to defend
+        your add-backs, the hard truth about cash-heavy businesses, and how to get your books ready
+        before anyone starts looking.
+      </p>
+    </header>
+
+    <div class="answer-box" role="complementary" aria-label="Quick answer">
+      <div class="answer-label">Quick Answer</div>
+      <p>
+        Quality of Earnings is the test of whether your reported profit is real, recurring, and
+        transferable. A buyer's accountant rebuilds your earnings from the ground up: normalizing
+        owner compensation and related-party rent to market, stripping out one-time and personal
+        items, correcting accounting timing, and demanding documentation for every add-back.
+        Anything you cannot substantiate gets removed — and each dollar removed costs you that dollar
+        times your multiple. The owners who get top price are the ones who did this work themselves,
+        12 to 24 months early, instead of discovering it in diligence.
+      </p>
+    </div>
+
+    <section class="hub-intro">
+      <h2>Why the number you report and the number you get paid for are different</h2>
+      <p>
+        Most owners assume valuation is a negotiation about the multiple. In practice, far more money
+        moves in the argument about the earnings the multiple is applied to. A 3x business that loses
+        $150,000 of unsupported add-backs in diligence doesn't lose $150,000 — it loses $450,000 of
+        purchase price. And that argument almost always happens late, under deadline, when you have
+        the least leverage.
+      </p>
+      <p>
+        This guide is the advanced companion to our <a href="/business-valuation">business valuation
+        guide</a>, which explains the metrics themselves — <a
+        href="/business-valuation/what-is-sde-sellers-discretionary-earnings">what SDE is</a>, <a
+        href="/business-valuation/ebitda-vs-sde-business-valuation">when EBITDA applies instead</a>,
+        and <a href="/business-valuation/add-backs-business-valuation">which add-backs are
+        legitimate</a>. These pages pick up where that leaves off: how those numbers get tested by a
+        real buyer, and what it takes to make yours hold up. For the wider process, see our <a
+        href="/how-to-sell-a-business">complete guide to selling a business</a>.
+      </p>
+    </section>
+
+    <section class="hub-steps">
+      <h2>Five things that decide whether your numbers hold up</h2>
+      <ol class="step-list">
+        {articles.map((a) => {
+          const info = stepMap[a.slug] ?? { step: 0, label: '' };
+          return (
+            <li class="step-entry">
+              <div class="step-num">{String(info.step).padStart(2, '0')}</div>
+              <div class="step-content">
+                <div class="step-label">{info.label}</div>
+                <h3><a href={`/quality-of-earnings/${a.slug}`}>{a.data.title}</a></h3>
+                <p>{a.data.description}</p>
+                <a href={`/quality-of-earnings/${a.slug}`} class="read-more">Read this guide →</a>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="hub-cta">
+      <h2>Find the problems before a buyer's accountant does</h2>
+      <p>
+        Every issue in this guide is cheap to fix 18 months before you list and expensive to discover
+        in week six of due diligence. John Matsis works with owners to pressure-test their earnings,
+        build a defensible add-back schedule, and get the financials ready before the business ever
+        goes to market — so the number you open with is the number you close on. A 20-minute
+        conversation is the fastest way to find out where you stand.
+      </p>
+      <div class="hub-cta-actions">
+        <a href="tel:2126780100" class="btn btn-primary btn-lg">Call (212) 678-0100</a>
+        <a href="mailto:john.matsis@hedgestone.com" class="btn btn-outline">Send an Email</a>
+      </div>
+    </section>
+
+    <section class="hub-faqs">
+      <h2>Frequently asked questions</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>What is a Quality of Earnings (QofE) report?</summary>
+          <p>
+            An independent accounting analysis that tests whether your reported earnings are real,
+            recurring, and sustainable. It is not an audit. It digs into revenue recognition, margin
+            trends, customer concentration, working capital, related-party dealings, and every
+            proposed add-back — separating durable earnings from one-time or unsupportable items.
+            Buyers commission one during diligence; sellers increasingly commission their own first.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>How is a QofE different from an audit?</summary>
+          <p>
+            An audit opines on whether financial statements are fairly presented under accounting
+            standards. A QofE asks a different question entirely: what are the true ongoing earnings
+            a buyer is actually purchasing? It focuses on normalization and sustainability rather
+            than compliance, usually covers a trailing twelve-month period, and drills into add-backs
+            and working capital. A company with clean audited statements can still get a rough QofE.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get paid for unreported cash income?</summary>
+          <p>
+            Realistically, no. Buyers pay for earnings they can verify, lenders underwrite from tax
+            returns, and a QofE ties revenue to bank deposits and filings. Income that was never
+            reported cannot be proven — so it carries no value in a sale, and raising it tells a
+            buyer you underreported your taxes. The legitimate path is to start reporting everything
+            two to three years before you sell, so the earnings show up where buyers actually look.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>What is normalized or adjusted EBITDA?</summary>
+          <p>
+            Earnings restated to reflect what the business produces under a typical owner. From
+            EBITDA, you adjust owner compensation to a market-rate manager's wage, restate
+            related-party rent to market, remove genuinely non-recurring items, strip personal and
+            non-operating expenses, and correct accounting distortions like cash-basis timing. That
+            adjusted figure, times a market multiple, is your enterprise value — which is exactly why
+            buyers test every line of it.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="hub-author">
+      <img src="/assets/john-matsis.jpg" alt="John Matsis" />
+      <div>
+        <div class="eyebrow">About the Author</div>
+        <h3>John Matsis</h3>
+        <div class="author-title">
+          Business &amp; Investment Property Broker and Principal · HedgeStone Business Advisors
+        </div>
+        <p>
+          John Matsis is a business broker and principal at HedgeStone Business Advisors with
+          hands-on experience building, acquiring, exiting, and investing in businesses across a wide
+          range of industries. He has sat on both sides of the diligence table — presenting earnings
+          to buyers and their accountants, and testing them as an acquirer. He works with owners to
+          recast financials honestly, build add-back schedules that survive a Quality of Earnings
+          review, and fix the problems that quietly cost sellers six figures at closing.
+        </p>
+        <div class="author-contact">
+          <a href="tel:2126780100">(212) 678-0100</a>
+          <span>·</span>
+          <a href="mailto:john.matsis@hedgestone.com">john.matsis@hedgestone.com</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer variant="full" />
+  <ScrollDepth contentTitle={title} />
+</BaseLayout>
