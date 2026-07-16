@@ -535,7 +535,32 @@ const description =
         }, utms), { eventID: eventId });
       }
 
-      window.location.href = '/report';
+      // Redirect to the report once the conversion pixels have had a chance to
+      // fire. goToReport runs exactly once — whichever of the Google Ads
+      // event_callback or the timeout fallback reaches it first.
+      let redirected = false;
+      const goToReport = () => {
+        if (redirected) return;
+        redirected = true;
+        window.location.href = '/report';
+      };
+
+      // Google Ads: conversion event on a completed valuation submission
+      // (mirrors the Meta Lead above). Routed to Google Ads through the linked
+      // GA4 Google tag (G-N3ZZXGVB5R). transaction_id dedupes repeat submits;
+      // event_callback defers the redirect until the ping is sent, and the
+      // timeout guarantees the user is never stuck if gtag is blocked.
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion_event_submit_lead_form', {
+          value: 100,
+          currency: 'USD',
+          transaction_id: eventId,
+          event_callback: goToReport,
+        });
+        setTimeout(goToReport, 1000);
+      } else {
+        goToReport();
+      }
     }
 
     ['grossRevenue', 'netIncome'].forEach(id => {
